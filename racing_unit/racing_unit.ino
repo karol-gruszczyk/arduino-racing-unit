@@ -4,6 +4,10 @@
 
 #define LAUNCH_CONTROL_RPM 6000
 #define LAUNCH_CONTROL_KILL_TIME 100
+#define LAUNCH_CONTROL_WORK_TIME 5000
+#define LAUNCH_CONTROL_ACCELEROMETER_MIN_ACCELERATION 1000
+#define LAUNCH_CONTROL_INPUT_PIN 0
+#define LAUNCH_CONTROL_ENABLING_TIME 3000
 
 #define WHEELIE_CONTROL_MAX_ANGLE 10
 #define WHEELIE_CONTROL_KILL_TIME_MODIFIER 100
@@ -25,7 +29,7 @@ const int COIL_PIN_INPUT[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
 const int COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
 
 #define RPM_REFRESH_RATE 200
-unsigned long long rpm_measurement_start_time = 0;
+unsigned long rpm_measurement_start_time = 0;
 int coil_spark_counter = 0;
 int last_rpm = 0;
 int current_rpm = 0;
@@ -34,7 +38,11 @@ bool spark_killed = false;
 bool spark_on_coil_1_killed = false;
 int current_spark_counter = 0;
 
+bool launch_control_enabling_started = false;
+unsigned long launch_control_enabling_start_time = 0;
 bool launch_control_enabled = false;
+bool launch_control_started = false;
+unsigned long launch_control_start_time = 0;
 
 void coils_setup();
 void quickshifter();
@@ -51,6 +59,7 @@ void setup()
 {
     mpu_setup();
     coils_setup();
+    pinMode(LAUNCH_CONTROL_INPUT_PIN, INPUT);
 }
 
 void loop()
@@ -93,9 +102,43 @@ void quickshifter()
 
 void launch_control()
 {
+    if (digitalRead(LAUNCH_CONTROL_INPUT_PIN) == HIGH)
+    {
+        if (!launch_control_enabling_started)
+        {
+            launch_control_enabling_started = true;
+            launch_control_enabling_start_time = millis();
+        }
+        if (millis() - launch_control_enabling_start_time >= LAUNCH_CONTROL_ENABLING_TIME)
+        {
+            launch_control_enabled = true;
+        }
+    }
+    else
+        launch_control_enabling_started = false;
+
     if (launch_control_enabled)
     {
-        if (current_rpm > LAUNCH_CONTROL_RPM)
+        if (abs(accel_real_avg.y) >= LAUNCH_CONTROL_ACCELEROMETER_MIN_ACCELERATION)
+        {
+            if (!launch_control_started)
+            {
+                launch_control_started = true;
+                launch_control_start_time = millis();
+            }
+            else
+            {
+                if (millis() - launch_control_start_time >= LAUNCH_CONTROL_WORK_TIME)
+                {
+                    launch_control_started = false;
+                    launch_control_enabled = false;
+                }
+            }
+        }
+        else
+            launch_control_started = false;
+
+        if (current_rpm >= LAUNCH_CONTROL_RPM)
             kill_spark(LAUNCH_CONTROL_KILL_TIME);
     }
 }
