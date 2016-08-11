@@ -1,0 +1,150 @@
+#include "mpu.h"
+
+#define CYLINDER_NUMBER 4
+
+#define LAUNCH_CONTROL_RPM 6000
+#define LAUNCH_CONTROL_KILL_TIME 100
+
+#define WHEELIE_CONTROL_MAX_ANGLE 10
+#define WHEELIE_CONTROL_KILL_TIME_MODIFIER 100
+#define WHEELIE_CONTROL_AXIS 2
+
+#define QUICKSHIFTER_MIN_RPM 2000
+#define QUICKSHIFTER_MAX_RPM 14000
+const int QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
+    {2000, 80},
+    {5500, 75},
+    {8500, 70},
+    {11500, 65},
+};
+
+const int CYLINDER_FIRING_SEQUENCE[CYLINDER_NUMBER] = { 1, 3, 2, 4 };
+#define COIL_1_INPUT_INT_PIN 2
+#define COIL_OTHER_INPUT_INT_PIN 3
+const int COIL_PIN_INPUT[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
+const int COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
+
+#define RPM_REFRESH_RATE 200
+unsigned long long rpm_measurement_start_time = 0;
+int coil_spark_counter = 0;
+int last_rpm = 0;
+int current_rpm = 0;
+bool rpm_rising = true;
+bool spark_killed = false;
+bool spark_on_coil_1_killed = false;
+int current_spark_counter = 0;
+
+bool launch_control_enabled = false;
+
+void coils_setup();
+void quickshifter();
+void launch_control();
+void wheelie_control();
+void measure_rpm();
+
+int get_kill_time(int rpm);
+void kill_spark(int duration);
+void spark_1_int();
+void spark_other_int();
+
+void setup()
+{
+    mpu_setup();
+    coils_setup();
+}
+
+void loop()
+{
+    mpu_loop();
+    measure_rpm();
+    quickshifter();
+    launch_control();
+    wheelie_control();
+}
+
+void coils_setup()
+{
+    for (int i = 0; i < CYLINDER_NUMBER; i++)
+    {
+        attachInterrupt(digitalPinToInterrupt(COIL_1_INPUT_INT_PIN), spark_1_int, FALLING);
+        attachInterrupt(digitalPinToInterrupt(COIL_OTHER_INPUT_INT_PIN), spark_other_int, FALLING);
+        pinMode(COIL_PIN_SWITCH[i], OUTPUT);
+    }
+}
+
+void measure_rpm()
+{
+    if (millis() - rpm_measurement_start_time >= RPM_REFRESH_RATE)
+    {
+        last_rpm = current_rpm;
+        float measure_time_in_minutes = 60000.f / float(millis() - rpm_measurement_start_time);
+        current_rpm = coil_spark_counter / 2 / measure_time_in_minutes;
+        
+        rpm_measurement_start_time = millis();
+        coil_spark_counter = 0;
+        rpm_rising = current_rpm >= last_rpm;
+    }
+}
+
+void quickshifter()
+{
+    
+}
+
+void launch_control()
+{
+    if (launch_control_enabled)
+    {
+        if (current_rpm > LAUNCH_CONTROL_RPM)
+            kill_spark(LAUNCH_CONTROL_KILL_TIME);
+    }
+}
+
+void wheelie_control()
+{
+    if (abs(ypr_avg[WHEELIE_CONTROL_AXIS]) >= WHEELIE_CONTROL_MAX_ANGLE)
+        kill_spark((ypr_avg[WHEELIE_CONTROL_AXIS] - WHEELIE_CONTROL_MAX_ANGLE) * WHEELIE_CONTROL_KILL_TIME_MODIFIER);
+}
+
+int get_kill_time(int rpm)
+{
+    int array_len = sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM) / sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM[0]);
+    for (int i = array_len - 1; i >= 0; i--)
+    {
+        if (QUICKSHIFTER_KILL_TIME_AT_RPM[i][0] < rpm)
+            return QUICKSHIFTER_KILL_TIME_AT_RPM[i][1];
+    }
+}
+
+void kill_spark(int duration)
+{
+    spark_killed = true;
+    delay(duration);
+    spark_killed = spark_on_coil_1_killed = false;
+
+    for (int i = 0; i < CYLINDER_NUMBER; i++)
+        digitalWrite(COIL_PIN_SWITCH[i], LOW);
+}
+
+void spark_1_int()
+{
+    if (spark_killed)
+    {
+        digitalWrite(COIL_PIN_SWITCH[0], HIGH);
+        spark_on_coil_1_killed = true;
+        current_spark_counter = 0;
+    }
+    coil_spark_counter++;
+}
+
+void spark_other_int()
+{
+    if (spark_on_coil_1_killed)
+    {
+        digitalWrite(COIL_PIN_SWITCH[CYLINDER_FIRING_SEQUENCE[current_spark_counter]], HIGH);
+        if (++current_spark_counter >= CYLINDER_NUMBER)
+            current_spark_counter = 0;
+    }
+    coil_spark_counter++;
+}
+
