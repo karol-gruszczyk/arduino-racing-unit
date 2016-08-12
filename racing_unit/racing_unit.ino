@@ -1,5 +1,7 @@
 #include "mpu.h"
 
+#define USE_SERIAL
+
 #define CYLINDER_NUMBER 4
 
 #define LAUNCH_CONTROL_RPM 6000
@@ -22,11 +24,10 @@ const int QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
     {11500, 65},
 };
 
-const int CYLINDER_FIRING_SEQUENCE[CYLINDER_NUMBER] = { 1, 3, 2, 4 };
+const int CYLINDER_FIRING_SEQUENCE[CYLINDER_NUMBER] = { 0, 2, 1, 3 };
 #define COIL_1_INPUT_INT_PIN 2
 #define COIL_OTHER_INPUT_INT_PIN 3
-const int COIL_PIN_INPUT[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
-const int COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
+const int COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 3, 4, 5, 6 };
 
 #define RPM_REFRESH_RATE 200
 unsigned long rpm_measurement_start_time = 0;
@@ -57,6 +58,10 @@ void spark_other_int();
 
 void setup()
 {
+    #ifdef USE_SERIAL
+    Serial.begin(115200);
+    #endif
+    
     mpu_setup();
     coils_setup();
     pinMode(LAUNCH_CONTROL_INPUT_PIN, INPUT);
@@ -86,8 +91,15 @@ void measure_rpm()
     if (millis() - rpm_measurement_start_time >= RPM_REFRESH_RATE)
     {
         last_rpm = current_rpm;
-        float measure_time_in_minutes = 60000.f / float(millis() - rpm_measurement_start_time);
-        current_rpm = coil_spark_counter / 2 / measure_time_in_minutes;
+        float measure_time_in_minutes = float(millis() - rpm_measurement_start_time) / 60000.f;
+        current_rpm = coil_spark_counter / 2.f / measure_time_in_minutes;
+
+        #ifdef USE_SERIAL
+        Serial.print(F("RPM: "));
+        Serial.print(current_rpm);
+        Serial.print(F(", sparks: "));
+        Serial.println(coil_spark_counter);
+        #endif
         
         rpm_measurement_start_time = millis();
         coil_spark_counter = 0;
@@ -110,9 +122,8 @@ void launch_control()
             launch_control_enabling_start_time = millis();
         }
         if (millis() - launch_control_enabling_start_time >= LAUNCH_CONTROL_ENABLING_TIME)
-        {
             launch_control_enabled = true;
-        }
+
     }
     else
         launch_control_enabling_started = false;
@@ -173,9 +184,9 @@ void spark_1_int()
 {
     if (spark_killed)
     {
-        digitalWrite(COIL_PIN_SWITCH[0], HIGH);
-        spark_on_coil_1_killed = true;
         current_spark_counter = 0;
+        digitalWrite(COIL_PIN_SWITCH[current_spark_counter++], HIGH);
+        spark_on_coil_1_killed = true;
     }
     coil_spark_counter++;
 }
