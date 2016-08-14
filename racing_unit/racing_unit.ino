@@ -1,6 +1,6 @@
 #include "mpu.h"
 
-#define USE_SERIAL
+//#define USE_SERIAL
 
 #define CYLINDER_NUMBER 4
 
@@ -8,36 +8,32 @@
 #define LAUNCH_CONTROL_KILL_TIME 100
 #define LAUNCH_CONTROL_WORK_TIME 5000
 #define LAUNCH_CONTROL_ACCELEROMETER_MIN_ACCELERATION 1000
-#define LAUNCH_CONTROL_INPUT_PIN 0
+#define LAUNCH_CONTROL_ENABLE_INPUT_PIN 0
 #define LAUNCH_CONTROL_ENABLING_TIME 3000
 
 #define WHEELIE_CONTROL_MAX_ANGLE 10
-#define WHEELIE_CONTROL_KILL_TIME_MODIFIER 100
+#define WHEELIE_CONTROL_KILL_TIME 100
 #define WHEELIE_CONTROL_AXIS 2
 
 #define QUICKSHIFTER_MIN_RPM 2000
 #define QUICKSHIFTER_MAX_RPM 14000
-const int QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
+const uint16_t QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
     {2000, 80},
     {5500, 75},
     {8500, 70},
     {11500, 65},
 };
 
-const int CYLINDER_FIRING_SEQUENCE[CYLINDER_NUMBER] = { 0, 2, 1, 3 };
-#define COIL_1_INPUT_INT_PIN 2
-#define COIL_OTHER_INPUT_INT_PIN 3
-const int COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 3, 4, 5, 6 };
+const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
+const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 3, 4, 5, 6 };
 
 #define RPM_REFRESH_RATE 200
 unsigned long rpm_measurement_start_time = 0;
-int coil_spark_counter = 0;
-int last_rpm = 0;
-int current_rpm = 0;
+uint16_t coil_spark_counter = 0;
+uint16_t last_rpm = 0;
+uint16_t current_rpm = 0;
 bool rpm_rising = true;
 bool spark_killed = false;
-bool spark_on_coil_1_killed = false;
-int current_spark_counter = 0;
 
 bool launch_control_enabling_started = false;
 unsigned long launch_control_enabling_start_time = 0;
@@ -51,10 +47,12 @@ void launch_control();
 void wheelie_control();
 void measure_rpm();
 
-int get_kill_time(int rpm);
-void kill_spark(int duration);
+uint8_t get_kill_time(uint16_t rpm);
+void kill_spark(uint16_t duration);
 void spark_1_int();
-void spark_other_int();
+void spark_2_int();
+void spark_3_int();
+void spark_4_int();
 
 void setup()
 {
@@ -64,7 +62,7 @@ void setup()
     
     mpu_setup();
     coils_setup();
-    pinMode(LAUNCH_CONTROL_INPUT_PIN, INPUT);
+    pinMode(LAUNCH_CONTROL_ENABLE_INPUT_PIN, INPUT);
 }
 
 void loop()
@@ -78,12 +76,13 @@ void loop()
 
 void coils_setup()
 {
-    for (int i = 0; i < CYLINDER_NUMBER; i++)
-    {
-        attachInterrupt(digitalPinToInterrupt(COIL_1_INPUT_INT_PIN), spark_1_int, FALLING);
-        attachInterrupt(digitalPinToInterrupt(COIL_OTHER_INPUT_INT_PIN), spark_other_int, FALLING);
+    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[0]), spark_1_int, FALLING);
+    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[1]), spark_2_int, FALLING);
+    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[2]), spark_3_int, FALLING);
+    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[3]), spark_4_int, FALLING);    
+
+    for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
         pinMode(COIL_PIN_SWITCH[i], OUTPUT);
-    }
 }
 
 void measure_rpm()
@@ -114,7 +113,7 @@ void quickshifter()
 
 void launch_control()
 {
-    if (digitalRead(LAUNCH_CONTROL_INPUT_PIN) == HIGH)
+    if (digitalRead(LAUNCH_CONTROL_ENABLE_INPUT_PIN) == HIGH)
     {
         if (!launch_control_enabling_started)
         {
@@ -157,48 +156,52 @@ void launch_control()
 void wheelie_control()
 {
     if (abs(ypr_avg[WHEELIE_CONTROL_AXIS]) >= WHEELIE_CONTROL_MAX_ANGLE)
-        kill_spark((ypr_avg[WHEELIE_CONTROL_AXIS] - WHEELIE_CONTROL_MAX_ANGLE) * WHEELIE_CONTROL_KILL_TIME_MODIFIER);
+        kill_spark(WHEELIE_CONTROL_KILL_TIME);
 }
 
-int get_kill_time(int rpm)
+uint8_t get_kill_time(uint16_t rpm)
 {
-    int array_len = sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM) / sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM[0]);
-    for (int i = array_len - 1; i >= 0; i--)
+    uint8_t array_len = sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM) / sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM[0]);
+    for (uint8_t i = array_len - 1; i >= 0; i--)
     {
         if (QUICKSHIFTER_KILL_TIME_AT_RPM[i][0] < rpm)
             return QUICKSHIFTER_KILL_TIME_AT_RPM[i][1];
     }
 }
 
-void kill_spark(int duration)
+void kill_spark(uint16_t duration)
 {
     spark_killed = true;
     delay(duration);
-    spark_killed = spark_on_coil_1_killed = false;
+    spark_killed = false;
 
-    for (int i = 0; i < CYLINDER_NUMBER; i++)
+    for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
         digitalWrite(COIL_PIN_SWITCH[i], LOW);
+}
+
+void spark_int(uint8_t spark_num)
+{
+    digitalWrite(COIL_PIN_SWITCH[spark_num - 1], spark_killed ? HIGH : LOW);
+    coil_spark_counter++;
 }
 
 void spark_1_int()
 {
-    if (spark_killed)
-    {
-        current_spark_counter = 0;
-        digitalWrite(COIL_PIN_SWITCH[current_spark_counter++], HIGH);
-        spark_on_coil_1_killed = true;
-    }
-    coil_spark_counter++;
+    spark_int(1);
 }
 
-void spark_other_int()
+void spark_2_int()
 {
-    if (spark_on_coil_1_killed)
-    {
-        digitalWrite(COIL_PIN_SWITCH[CYLINDER_FIRING_SEQUENCE[current_spark_counter]], HIGH);
-        if (++current_spark_counter >= CYLINDER_NUMBER)
-            current_spark_counter = 0;
-    }
-    coil_spark_counter++;
+    spark_int(2);
+}
+
+void spark_3_int()
+{
+    spark_int(3);
+}
+
+void spark_4_int()
+{
+    spark_int(4);
 }
 
