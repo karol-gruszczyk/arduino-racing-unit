@@ -17,6 +17,7 @@
 
 #define QUICKSHIFTER_MIN_RPM 2000
 #define QUICKSHIFTER_MAX_RPM 14000
+
 const uint16_t QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
     {2000, 80},
     {5500, 75},
@@ -24,12 +25,16 @@ const uint16_t QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
     {11500, 65},
 };
 
-const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 0, 0, 0, 0 };
+#define ENGINE_BRAKING_RPM_FALL_PER_SECOND 500
+#define ENGINE_BRAKING_KILL_TIME 100
+
+const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };  // PB6, PB2, PB3, PB1
+const uint8_t COIL_PIN_PCINT_INPUT[CYLINDER_NUMBER] = { PCINT6, PCINT2, PCINT3, PCINT1 };
 const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 3, 4, 5, 6 };
 
 #define RPM_REFRESH_RATE 200
 unsigned long rpm_measurement_start_time = 0;
-uint16_t coil_spark_counter = 0;
+volatile uint16_t coil_spark_counter = 0;
 uint16_t last_rpm = 0;
 uint16_t current_rpm = 0;
 bool rpm_rising = true;
@@ -49,10 +54,6 @@ void measure_rpm();
 
 uint8_t get_kill_time(uint16_t rpm);
 void kill_spark(uint16_t duration);
-void spark_1_int();
-void spark_2_int();
-void spark_3_int();
-void spark_4_int();
 
 void setup()
 {
@@ -76,10 +77,17 @@ void loop()
 
 void coils_setup()
 {
-    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[0]), spark_1_int, FALLING);
-    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[1]), spark_2_int, FALLING);
-    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[2]), spark_3_int, FALLING);
-    attachInterrupt(digitalPinToInterrupt(COIL_PIN_INT_INPUT[3]), spark_4_int, FALLING);    
+    for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
+    {
+        pinMode(COIL_PIN_INT_INPUT[i], INPUT);
+        digitalWrite(COIL_PIN_INT_INPUT[i], HIGH);
+    }
+
+    cli();  // disable interrupts
+    PCICR |= (1 << PCIE0);  // enable PCINT0(port B) interrupts
+    for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
+        PCMSK0 |= (1 << COIL_PIN_PCINT_INPUT[i]);  // enable interrupts on the appropriate pins on port B
+    sei();  // enable interrupts
 
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
         pinMode(COIL_PIN_SWITCH[i], OUTPUT);
@@ -181,27 +189,31 @@ void kill_spark(uint16_t duration)
 
 void spark_int(uint8_t spark_num)
 {
-    digitalWrite(COIL_PIN_SWITCH[spark_num - 1], spark_killed ? HIGH : LOW);
+    digitalWrite(COIL_PIN_SWITCH[spark_num], spark_killed ? HIGH : LOW);
     coil_spark_counter++;
 }
 
-void spark_1_int()
-{
-    spark_int(1);
-}
+int8_t last_high_spark = -1;
 
-void spark_2_int()
+ISR (PCINT0_vect)
 {
-    spark_int(2);
+    if (last_high_spark == -1)
+    {
+        for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
+        {
+            if (digitalRead(COIL_PIN_INT_INPUT[i] == HIGH))
+            {
+                last_high_spark = i;
+                return;
+            }
+        }
+    }
+    else
+    {
+        if (digitalRead(COIL_PIN_INT_INPUT[last_high_spark]) == LOW)
+        {
+            spark_int(last_high_spark);
+            last_high_spark = -1;
+        }
+    }
 }
-
-void spark_3_int()
-{
-    spark_int(3);
-}
-
-void spark_4_int()
-{
-    spark_int(4);
-}
-
