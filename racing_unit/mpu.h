@@ -4,7 +4,7 @@
 //#define USE_SERIAL
 #define USE_INTERRUPT
 #ifdef USE_INTERRUPT
-#define INTERRUPT_PIN 0
+#define INTERRUPT_PIN 7
 #endif
 
 MPU6050 mpu(0x68);
@@ -71,7 +71,7 @@ void mpu_setup()
         #ifdef USE_SERIAL
         Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
         #endif
-        attachInterrupt(INTERRUPT_PIN, dmpDataReady, RISING);
+        attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
         #endif
         
         mpuIntStatus = mpu.getIntStatus();
@@ -186,4 +186,3 @@ void mpu_loop()
         }
     }
 }
-
