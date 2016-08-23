@@ -1,4 +1,4 @@
-#include "defaults.h"
+#include "settings.h"
 
 #define CURRENT_BLUETOOTH_BAUD_RATE 9600  // after running this code once you need to change the baud rate to 115200
 
@@ -57,6 +57,7 @@ void setup_bluetooth()
 }
 
 void setup_eeprom()
-{
-    
+{\
+    Serial.println(F("Saving default settings to EEPROM.\n"));
+    save_settings();
 }

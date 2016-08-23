@@ -1,5 +1,6 @@
 #include <I2Cdev.h>
 #include <MPU6050_6Axis_MotionApps20.h>
+#include "globals.h"
 
 //#define USE_SERIAL
 #define USE_INTERRUPT
@@ -21,12 +22,10 @@ VectorInt16 accel_real; // [x, y, z]            gravity-free accel sensor measur
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
-#define RESULT_AVERAGE_NUMBER 20.f
+#define RESULT_AVERAGE_NUMBER 20
 uint8_t avg_counter = 0;
-float ypr_avg[3];
-VectorInt16 accel_real_avg;
-
-bool blinkState = false;
+float ypr_sum[3];
+VectorInt16 accel_real_sum;
 
 #ifdef USE_INTERRUPT
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
@@ -40,9 +39,6 @@ void dmpDataReady()
 void mpu_setup()
 {
     Wire.begin();
-    #ifdef USE_SERIAL
-    Serial.begin(115200);
-    #endif
     mpu.initialize();
 
     #ifdef USE_SERIAL
@@ -139,9 +135,9 @@ void mpu_loop()
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-        ypr_avg[0] += ypr[0] / RESULT_AVERAGE_NUMBER;
-        ypr_avg[1] += ypr[1] / RESULT_AVERAGE_NUMBER;
-        ypr_avg[2] += ypr[2] / RESULT_AVERAGE_NUMBER;
+        ypr_sum[0] += ypr[0];
+        ypr_sum[1] += ypr[1];
+        ypr_sum[2] += ypr[2];
 
 
         // display real acceleration, adjusted to remove gravity
@@ -149,21 +145,38 @@ void mpu_loop()
         mpu.dmpGetAccel(&accel, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
         mpu.dmpGetLinearAccel(&accel_real, &accel, &gravity);
-        accel_real_avg.x += accel_real.x / RESULT_AVERAGE_NUMBER;
-        accel_real_avg.y += accel_real.y / RESULT_AVERAGE_NUMBER;
-        accel_real_avg.z += accel_real.z / RESULT_AVERAGE_NUMBER;
+        accel_real_sum.x += accel_real.x;
+        accel_real_sum.y += accel_real.y;
+        accel_real_sum.z += accel_real.z;
 
 
         if (++avg_counter >= RESULT_AVERAGE_NUMBER)
         {
             avg_counter = 0;
+
+            globals.ypr[0] = ypr_sum[0] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI;
+            globals.ypr[1] = ypr_sum[1] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI;
+            globals.ypr[2] = ypr_sum[2] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI;
+
+            ypr_sum[0] = 0;
+            ypr_sum[1] = 0;
+            ypr_sum[2] = 0;
+
+            globals.accel_real.x = accel_real_sum.x / float(RESULT_AVERAGE_NUMBER);
+            globals.accel_real.y = accel_real_sum.y / float(RESULT_AVERAGE_NUMBER);
+            globals.accel_real.z = accel_real_sum.z / float(RESULT_AVERAGE_NUMBER);
+
+            accel_real_sum.x = 0;
+            accel_real_sum.y = 0;
+            accel_real_sum.z = 0;
+
             #ifdef USE_SERIAL
             Serial.print("ypr\t");
-            Serial.print(ypr_avg[0] * 180/M_PI);
+            Serial.print(globals.ypr[0]);
             Serial.print("\t");
-            Serial.print(ypr_avg[1] * 180/M_PI);
+            Serial.print(globals.ypr[1]);
             Serial.print("\t");
-            Serial.println(ypr_avg[2] * 180/M_PI);
+            Serial.println(globals.ypr[2]);
 
             Serial.print("areal\t");
             Serial.print(accel_real_avg.x);
@@ -172,17 +185,6 @@ void mpu_loop()
             Serial.print("\t");
             Serial.println(accel_real_avg.z);
             #endif
-
-            ypr_avg[0] = 0;
-            ypr_avg[1] = 0;
-            ypr_avg[2] = 0;
-
-            accel_real_avg.x = 0;
-            accel_real_avg.y = 0;
-            accel_real_avg.z = 0;
-
-            // blink LED to indicate activity
-            blinkState = !blinkState;
         }
     }
 }

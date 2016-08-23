@@ -1,48 +1,24 @@
 #include "mpu.h"
+#include "bluetooth.h"
 
 //#define USE_SERIAL
 
 #define CYLINDER_NUMBER 4
-
-#define LAUNCH_CONTROL_RPM 6000
-#define LAUNCH_CONTROL_KILL_TIME 100
-#define LAUNCH_CONTROL_WORK_TIME 5000
-#define LAUNCH_CONTROL_ACCELEROMETER_MIN_ACCELERATION 1000
+#define RPM_REFRESH_RATE 200
 #define LAUNCH_CONTROL_ENABLE_INPUT_PIN 4
 #define LAUNCH_CONTROL_ENABLING_TIME 3000
-
-#define WHEELIE_CONTROL_MAX_ANGLE 10
-#define WHEELIE_CONTROL_KILL_TIME 100
-#define WHEELIE_CONTROL_AXIS 2
-
-#define QUICKSHIFTER_MIN_RPM 2000
-#define QUICKSHIFTER_MAX_RPM 14000
-
-const uint16_t QUICKSHIFTER_KILL_TIME_AT_RPM[][2] = {
-    {2000, 80},
-    {5500, 75},
-    {8500, 70},
-    {11500, 65},
-};
-
-#define ENGINE_BRAKING_RPM_FALL_PER_SECOND 500
-#define ENGINE_BRAKING_KILL_TIME 100
 
 const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };  // PB6, PB2, PB3, PB1
 const uint8_t COIL_PIN_PCINT_INPUT[CYLINDER_NUMBER] = { PCINT6, PCINT2, PCINT3, PCINT1 };
 const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 9, 8, 6, 5 };
 
-#define RPM_REFRESH_RATE 200
 unsigned long rpm_measurement_start_time = 0;
 volatile uint16_t coil_spark_counter = 0;
 uint16_t last_rpm = 0;
-uint16_t current_rpm = 0;
-bool rpm_rising = true;
-bool spark_killed = false;
+volatile bool spark_killed = false;
 
 bool launch_control_enabling_started = false;
 unsigned long launch_control_enabling_start_time = 0;
-bool launch_control_enabled = false;
 bool launch_control_started = false;
 unsigned long launch_control_start_time = 0;
 
@@ -51,6 +27,8 @@ void quickshifter();
 void launch_control();
 void wheelie_control();
 void measure_rpm();
+void bluetooth_setup();
+void bluetooth();
 
 uint8_t get_kill_time(uint16_t rpm);
 void kill_spark(uint16_t duration);
@@ -60,7 +38,9 @@ void setup()
     #ifdef USE_SERIAL
     Serial.begin(115200);
     #endif
-    
+
+    load_settings();
+    bluetooth_setup();
     mpu_setup();
     coils_setup();
     pinMode(LAUNCH_CONTROL_ENABLE_INPUT_PIN, INPUT);
@@ -74,6 +54,7 @@ void loop()
     quickshifter();
     launch_control();
     wheelie_control();
+    bluetooth();
 }
 
 void coils_setup()
@@ -98,26 +79,27 @@ void measure_rpm()
 {
     if (millis() - rpm_measurement_start_time >= RPM_REFRESH_RATE)
     {
-        last_rpm = current_rpm;
+        last_rpm = globals.current_rpm;
         float measure_time_in_minutes = float(millis() - rpm_measurement_start_time) / 60000.f;
-        current_rpm = coil_spark_counter / 2.f / measure_time_in_minutes;
+        globals.current_rpm = coil_spark_counter / 2.f / measure_time_in_minutes;
 
         #ifdef USE_SERIAL
         Serial.print(F("RPM: "));
-        Serial.print(current_rpm);
+        Serial.print(globals.current_rpm);
         Serial.print(F(", sparks: "));
         Serial.println(coil_spark_counter);
         #endif
         
         rpm_measurement_start_time = millis();
         coil_spark_counter = 0;
-        rpm_rising = current_rpm >= last_rpm;
+        globals.rpm_rising = globals.current_rpm >= last_rpm;
     }
 }
 
 void quickshifter()
 {
-    
+    if (!settings.quickshifter_enabled)
+        return;
 }
 
 void launch_control()
@@ -130,15 +112,15 @@ void launch_control()
             launch_control_enabling_start_time = millis();
         }
         if (millis() - launch_control_enabling_start_time >= LAUNCH_CONTROL_ENABLING_TIME)
-            launch_control_enabled = true;
+            globals.launch_control_enabled = true;
 
     }
     else
         launch_control_enabling_started = false;
 
-    if (launch_control_enabled)
+    if (globals.launch_control_enabled)
     {
-        if (abs(accel_real_avg.y) >= LAUNCH_CONTROL_ACCELEROMETER_MIN_ACCELERATION)
+        if (abs(globals.accel_real.y) >= settings.launch_control_accelerometer_min_acceleration)
         {
             if (!launch_control_started)
             {
@@ -147,34 +129,36 @@ void launch_control()
             }
             else
             {
-                if (millis() - launch_control_start_time >= LAUNCH_CONTROL_WORK_TIME)
+                if (millis() - launch_control_start_time >= settings.launch_control_work_time)
                 {
                     launch_control_started = false;
-                    launch_control_enabled = false;
+                    globals.launch_control_enabled = false;
                 }
             }
         }
         else
             launch_control_started = false;
 
-        if (current_rpm >= LAUNCH_CONTROL_RPM)
-            kill_spark(LAUNCH_CONTROL_KILL_TIME);
+        if (globals.current_rpm >= settings.launch_control_rpm)
+            kill_spark(settings.launch_control_kill_time);
     }
 }
 
 void wheelie_control()
 {
-    if (abs(ypr_avg[WHEELIE_CONTROL_AXIS]) >= WHEELIE_CONTROL_MAX_ANGLE)
-        kill_spark(WHEELIE_CONTROL_KILL_TIME);
+    if (!settings.wheelie_control_enabled)
+        return;
+    if (abs(globals.ypr[settings.wheelie_control_axis]) >= settings.wheelie_control_max_angle)
+        kill_spark(settings.wheelie_control_kill_time);
 }
 
 uint8_t get_kill_time(uint16_t rpm)
 {
-    uint8_t array_len = sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM) / sizeof(QUICKSHIFTER_KILL_TIME_AT_RPM[0]);
+    uint8_t array_len = sizeof(settings.quickshifter_kill_time_at_rpm) / sizeof(settings.quickshifter_kill_time_at_rpm[0]);
     for (uint8_t i = array_len - 1; i >= 0; i--)
     {
-        if (QUICKSHIFTER_KILL_TIME_AT_RPM[i][0] < rpm)
-            return QUICKSHIFTER_KILL_TIME_AT_RPM[i][1];
+        if (settings.quickshifter_kill_time_at_rpm[i][0] < rpm)
+            return settings.quickshifter_kill_time_at_rpm[i][1];
     }
 }
 
