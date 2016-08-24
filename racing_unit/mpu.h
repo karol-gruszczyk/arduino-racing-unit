@@ -2,11 +2,9 @@
 #include <MPU6050_6Axis_MotionApps20.h>
 #include "globals.h"
 
-//#define USE_SERIAL
+#define USE_SERIAL
 #define USE_INTERRUPT
-#ifdef USE_INTERRUPT
 #define INTERRUPT_PIN 7
-#endif
 
 MPU6050 mpu(0x68);
 
@@ -22,7 +20,7 @@ VectorInt16 accel_real; // [x, y, z]            gravity-free accel sensor measur
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
-#define RESULT_AVERAGE_NUMBER 20
+#define RESULT_AVERAGE_NUMBER 10
 uint8_t avg_counter = 0;
 float ypr_sum[3];
 VectorInt16 accel_real_sum;
@@ -39,6 +37,7 @@ void dmpDataReady()
 void mpu_setup()
 {
     Wire.begin();
+    TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
     mpu.initialize();
 
     #ifdef USE_SERIAL
@@ -149,7 +148,6 @@ void mpu_loop()
         accel_real_sum.y += accel_real.y;
         accel_real_sum.z += accel_real.z;
 
-
         if (++avg_counter >= RESULT_AVERAGE_NUMBER)
         {
             avg_counter = 0;
@@ -179,11 +177,11 @@ void mpu_loop()
             Serial.println(globals.ypr[2]);
 
             Serial.print("areal\t");
-            Serial.print(accel_real_avg.x);
+            Serial.print(globals.accel_real.x);
             Serial.print("\t");
-            Serial.print(accel_real_avg.y);
+            Serial.print(globals.accel_real.y);
             Serial.print("\t");
-            Serial.println(accel_real_avg.z);
+            Serial.println(globals.accel_real.z);
             #endif
         }
     }

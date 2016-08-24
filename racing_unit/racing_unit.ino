@@ -1,7 +1,8 @@
 #include "mpu.h"
 #include "bluetooth.h"
 
-//#define USE_SERIAL
+#define USE_SERIAL
+//#define DISPLAY_RPM
 
 #define CYLINDER_NUMBER 4
 #define RPM_REFRESH_RATE 200
@@ -16,6 +17,7 @@ unsigned long rpm_measurement_start_time = 0;
 volatile uint16_t coil_spark_counter = 0;
 uint16_t last_rpm = 0;
 volatile bool spark_killed = false;
+unsigned long spark_restore_time = 0;
 
 bool launch_control_enabling_started = false;
 unsigned long launch_control_enabling_start_time = 0;
@@ -32,11 +34,14 @@ void bluetooth();
 
 uint8_t get_kill_time(uint16_t rpm);
 void kill_spark(uint16_t duration);
+void restore_spark();
+
 
 void setup()
 {
     #ifdef USE_SERIAL
     Serial.begin(115200);
+    while(!Serial);
     #endif
 
     load_settings();
@@ -49,6 +54,7 @@ void setup()
 
 void loop()
 {
+    restore_spark();
     mpu_loop();
     measure_rpm();
     quickshifter();
@@ -83,7 +89,7 @@ void measure_rpm()
         float measure_time_in_minutes = float(millis() - rpm_measurement_start_time) / 60000.f;
         globals.current_rpm = coil_spark_counter / 2.f / measure_time_in_minutes;
 
-        #ifdef USE_SERIAL
+        #if defined(USE_SERIAL) && defined(DISPLAY_RPM) 
         Serial.print(F("RPM: "));
         Serial.print(globals.current_rpm);
         Serial.print(F(", sparks: "));
@@ -165,11 +171,13 @@ uint8_t get_kill_time(uint16_t rpm)
 void kill_spark(uint16_t duration)
 {
     spark_killed = true;
-    delay(duration);
-    spark_killed = false;
+    spark_restore_time = millis() + duration;
+}
 
-    for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
-        digitalWrite(COIL_PIN_SWITCH[i], LOW);
+void restore_spark()
+{
+    if (spark_killed && millis() >= spark_restore_time)
+        spark_killed = false;
 }
 
 void spark_int(uint8_t spark_num)
