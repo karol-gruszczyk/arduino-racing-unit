@@ -47,12 +47,21 @@ void bluetooth()
     else
         received_full_cmd = true;
 
-    if (command[0] == 'G')
+    if (command == "SAVE")
+    {
+        save_settings();
+        Serial1.println(F("OK"));
+    }
+    else if (command == "CAL_GYRO")
+    {
+        settings.gyro_calibration[0] += globals.ypr[0];
+        settings.gyro_calibration[1] += globals.ypr[1];
+        settings.gyro_calibration[2] += globals.ypr[2];
+        Serial1.println(F("OK"));
+    }
+    else if (command[0] == 'G')
     {
         String get_what = command.substring(1);
-        #ifdef USE_SERIAL
-        Serial.println(get_what);
-        #endif
         bt_get(get_what);
     }
     else if(command[0] == 'S')
@@ -60,10 +69,6 @@ void bluetooth()
         uint8_t pars_start = command.indexOf(COMMAND_ARGS_BEGINING_CHAR);
         String set_what = command.substring(1, pars_start);
         String args = command.substring(pars_start + 1);
-        #ifdef USE_SERIAL
-        Serial.println(set_what);
-        Serial.println(args);
-        #endif
         bt_set(set_what, args);
     }
     else
@@ -79,20 +84,24 @@ void bt_get(String get_what)
         Serial1.println(globals.current_rpm);
     else if (get_what == "YPR")
     {
-        Serial1.print(globals.ypr[0]);
+        Serial1.print((int)globals.ypr[0]);
         Serial1.print(",");
-        Serial1.print(globals.ypr[1]);
+        Serial1.print((int)globals.ypr[1]);
         Serial1.print(",");
-        Serial1.println(globals.ypr[2]);
+        Serial1.println((int)globals.ypr[2]);
     }
     
     // quickshifter
     else if (get_what == "QS")
-        Serial1.println(settings.quickshifter_enabled);
+        Serial1.println(settings.quickshifter_enabled ? "ON" : "OFF");
     else if (get_what == "QS_MIN")
         Serial1.println(settings.quickshifter_min_rpm);
     else if (get_what == "QS_MAX")
         Serial1.println(settings.quickshifter_max_rpm);
+    else if (get_what == "QS_SENS")
+        Serial1.println(settings.quickshifter_sensitivity);
+    else if (get_what == "QS_CSENS")
+        Serial1.println(40);  // TODO
     else if (get_what == "QS_KT")
     {
         for (uint8_t i = 0; i < QUICKSHIFTER_KILL_TIME_SIZE; i++)
@@ -107,30 +116,26 @@ void bt_get(String get_what)
     
     // wheelie control
     else if (get_what == "WC")
-        Serial1.println(settings.wheelie_control_enabled);
+        Serial1.println(settings.wheelie_control_enabled ? "ON" : "OFF");
     else if (get_what == "WC_ANGLE")
         Serial1.println(settings.wheelie_control_max_angle);
-    else if (get_what == "WC_AXIS")
-        Serial1.println(settings.wheelie_control_axis);
     else if (get_what == "WC_KT")
         Serial1.println(settings.wheelie_control_kill_time);
     
     // launch control
     else if (get_what == "LC")
-        Serial1.println(globals.launch_control_enabled);
+        Serial1.println(globals.launch_control_enabled ? "ON" : "OFF");
     else if (get_what == "LC_RPM")
         Serial1.println(settings.launch_control_rpm);
     else if (get_what == "LC_KT")
         Serial1.println(settings.launch_control_kill_time);
     else if (get_what == "LC_WT")
-        Serial1.println(settings.launch_control_work_time);
-    else if (get_what == "LC_AC")
-        Serial1.println(settings.launch_control_accelerometer_min_acceleration);
+        Serial1.println(settings.launch_control_working_time);
 }
 
 void bt_set(String set_what, String args)
 {
-    bool error = true, save = true;
+    bool error = true;
 
     // quickshifter
     if (set_what == "QS")
@@ -159,6 +164,14 @@ void bt_set(String set_what, String args)
         if (isNumber(args))
         {
             settings.quickshifter_max_rpm = args.toInt();
+            error = false;
+        }
+    }
+    else if (set_what == "QS_SENS")
+    {
+        if (isNumber(args))
+        {
+            settings.quickshifter_sensitivity = args.toInt();
             error = false;
         }
     }
@@ -205,14 +218,6 @@ void bt_set(String set_what, String args)
             error = false;
         }
     }
-    else if (set_what == "WC_AXIS")
-    {
-        if (isNumber(args))
-        {
-            settings.wheelie_control_axis = args.toInt();
-            error = false;
-        }
-    }
     else if (set_what == "WC_KT")
     {
         if (isNumber(args))
@@ -228,12 +233,12 @@ void bt_set(String set_what, String args)
         if (args == "ON")
         {
             globals.launch_control_enabled = true;
-            error = save = false;
+            error = false;
         }
         else if (args == "OFF")
         {
             globals.launch_control_enabled = false;
-            error = save = false;
+            error = false;
         }
     }
     else if (set_what == "LC_RPM")
@@ -256,32 +261,13 @@ void bt_set(String set_what, String args)
     {
         if (isNumber(args))
         {
-            settings.launch_control_work_time = args.toInt();
+            settings.launch_control_working_time = args.toInt();
             error = false;
         }
     }
-    else if (set_what == "LC_AC")
-    {
-        if (isNumber(args))
-        {
-            settings.launch_control_accelerometer_min_acceleration = args.toInt();
-            error = false;
-        }
-    }
-
     
     if (!error)
-    {
-        if (save)
-        {
-            save_settings();
-            Serial1.println(F("SAVED"));
-        }
-        else
-            Serial1.println(F("OK"));
-    }
+        Serial1.println(F("OK"));
     else
-    {
         Serial1.println(F("ERROR"));
-    }
 }

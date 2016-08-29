@@ -1,13 +1,14 @@
 #include "mpu.h"
 #include "bluetooth.h"
 
-#define USE_SERIAL
+//#define USE_SERIAL
 //#define DISPLAY_RPM
 
 #define CYLINDER_NUMBER 4
 #define RPM_REFRESH_RATE 200
 #define LAUNCH_CONTROL_ENABLE_INPUT_PIN 4
 #define LAUNCH_CONTROL_ENABLING_TIME 3000
+#define WHEELIE_CONTROL_AXIS 2
 
 const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };  // PB6, PB2, PB3, PB1
 const uint8_t COIL_PIN_PCINT_INPUT[CYLINDER_NUMBER] = { PCINT6, PCINT2, PCINT3, PCINT1 };
@@ -55,7 +56,7 @@ void setup()
 void loop()
 {
     restore_spark();
-    mpu_loop();
+    //mpu_loop();
     measure_rpm();
     quickshifter();
     launch_control();
@@ -126,24 +127,22 @@ void launch_control()
 
     if (globals.launch_control_enabled)
     {
-        if (abs(globals.accel_real.y) >= settings.launch_control_accelerometer_min_acceleration)
+        if (!launch_control_started)
         {
-            if (!launch_control_started)
+            if (abs(globals.accel_real.y) >= LAUNCH_CONTROL_ACTIVATION_ACCELERATION)
             {
                 launch_control_started = true;
                 launch_control_start_time = millis();
             }
-            else
-            {
-                if (millis() - launch_control_start_time >= settings.launch_control_work_time)
-                {
-                    launch_control_started = false;
-                    globals.launch_control_enabled = false;
-                }
-            }
         }
         else
-            launch_control_started = false;
+        {
+            if (millis() - launch_control_start_time >= settings.launch_control_working_time)
+            {
+                launch_control_started = false;
+                globals.launch_control_enabled = false;
+            }
+        }
 
         if (globals.current_rpm >= settings.launch_control_rpm)
             kill_spark(settings.launch_control_kill_time);
@@ -154,7 +153,7 @@ void wheelie_control()
 {
     if (!settings.wheelie_control_enabled)
         return;
-    if (abs(globals.ypr[settings.wheelie_control_axis]) >= settings.wheelie_control_max_angle)
+    if (abs(globals.ypr[WHEELIE_CONTROL_AXIS]) >= settings.wheelie_control_max_angle)
         kill_spark(settings.wheelie_control_kill_time);
 }
 

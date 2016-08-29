@@ -1,8 +1,9 @@
 #include <I2Cdev.h>
 #include <MPU6050_6Axis_MotionApps20.h>
 #include "globals.h"
+#include "setup_defaults/settings.h"
 
-#define USE_SERIAL
+//#define USE_SERIAL
 #define USE_INTERRUPT
 #define INTERRUPT_PIN 7
 
@@ -20,7 +21,7 @@ VectorInt16 accel_real; // [x, y, z]            gravity-free accel sensor measur
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
-#define RESULT_AVERAGE_NUMBER 10
+#define RESULT_AVERAGE_NUMBER 5
 uint8_t avg_counter = 0;
 float ypr_sum[3];
 VectorInt16 accel_real_sum;
@@ -152,9 +153,9 @@ void mpu_loop()
         {
             avg_counter = 0;
 
-            globals.ypr[0] = ypr_sum[0] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI;
-            globals.ypr[1] = ypr_sum[1] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI;
-            globals.ypr[2] = ypr_sum[2] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI;
+            globals.ypr[0] = ypr_sum[0] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI - settings.gyro_calibration[0];
+            globals.ypr[1] = ypr_sum[1] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI - settings.gyro_calibration[1];
+            globals.ypr[2] = ypr_sum[2] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI - settings.gyro_calibration[2];
 
             ypr_sum[0] = 0;
             ypr_sum[1] = 0;
