@@ -26,6 +26,7 @@ public class Settings extends AppCompatActivity {
     ProgressBar qsSensorProgressBar, rpmProgressBar;
     Button gyroButton, qsKillTimesButton, saveButton, backButton;
 
+    private int maxRpm = 100;
     private int qsSensorMax = 0;
 
     @Override
@@ -309,10 +310,14 @@ public class Settings extends AppCompatActivity {
                 btContext.write("GRPM");
                 int rpm = Integer.parseInt(btContext.read());
                 rpmTextView.setText(String.format(Locale.getDefault(),
-                        "Current RPM: %d", rpm));
-                rpmProgressBar.setProgress(rpm / 200);  // max rpm is 200 * 100% = 20k rpm
+                        "Current RPM: %d / %d", rpm, maxRpm));
+                if (rpm > maxRpm) {
+                    maxRpm = rpm;
+                    rpmProgressBar.setMax(maxRpm);
+                }
+                rpmProgressBar.setProgress(rpm);
 
-                updateHandler.postDelayed(this, 500);
+                updateHandler.postDelayed(this, 250);
             }
         });
 

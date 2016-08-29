@@ -11,15 +11,16 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="@dimen/activity_horizontal_margin"
         android:id="@+id/scrollView"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp">
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -51,6 +52,37 @@
                 android:layout_below="@+id/gyroTextView"
                 android:layout_centerHorizontal="true" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="RPM"
+                android:id="@+id/textView5"
+                android:layout_below="@+id/gyroButton"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Current RPM: 0 / 0"
+                android:id="@+id/rpmTextView"
+                android:layout_below="@+id/textView5"
+                android:layout_centerHorizontal="true" />
+
+            <ProgressBar
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/rpmProgressBar"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/rpmTextView"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:progress="0"
+                android:indeterminate="false" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -58,7 +90,7 @@
                 android:id="@+id/view1"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/gyroButton" />
+                android:layout_below="@+id/rpmProgressBar" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -320,76 +352,28 @@
                 android:id="@+id/qsKillTimesButton"
                 android:layout_below="@+id/qsSensitivitySeekBar"
                 android:layout_centerHorizontal="true" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/view3"
-                android:layout_below="@+id/qsKillTimesButton"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Testing"
-                android:id="@+id/textView5"
-                android:layout_below="@+id/view3"
-                android:layout_centerHorizontal="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Current RPM: 0"
-                android:id="@+id/rpmTextView"
-                android:layout_below="@+id/textView5"
-                android:layout_centerHorizontal="true" />
-
-            <ProgressBar
-                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rpmProgressBar"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/rpmTextView"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:progress="0"
-                android:indeterminate="false" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/darker_gray"
-                android:id="@+id/view4"
-                android:layout_below="@+id/rpmProgressBar"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Save"
-                android:id="@+id/saveButton"
-                android:layout_below="@+id/view4"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Back"
-                android:id="@+id/backButton"
-                android:layout_below="@+id/view4"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
         </RelativeLayout>
     </ScrollView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/saveButton"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:id="@+id/backButton"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

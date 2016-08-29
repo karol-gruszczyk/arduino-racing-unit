@@ -27,7 +27,7 @@ public class MainScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View v = getLayoutInflater().inflate(R.layout.activity_main_screen, null);// or any View (incase generated programmatically )
+        View v = getLayoutInflater().inflate(R.layout.activity_main_screen, null);
         v.setKeepScreenOn(true);
         setContentView(v);
 
