@@ -3,7 +3,7 @@
 
 //#define USE_SERIAL
 
-#define COMMAND_EOF_CHAR ';'
+#define COMMAND_EOF_CHAR '\n'
 #define COMMAND_ARGS_BEGINING_CHAR ':'
 #define COMMAND_ARGS_DELIMITER ','
 
@@ -137,8 +137,17 @@ void bt_set(String set_what, String args)
 {
     bool error = true;
 
+    if (set_what == "KS")
+    {
+        if (isNumber(args))
+        {
+            kill_spark(args.toInt());
+            error = false;
+        }
+    }
+
     // quickshifter
-    if (set_what == "QS")
+    else if (set_what == "QS")
     {
         if (args == "ON")
         {

@@ -88,18 +88,18 @@ public class BluetoothContext extends AsyncTask<Void, Void, Void> { // UI thread
         }
     }
 
-    protected void write(String command) {
+    private void write(String command) {
         if (isReady()) {
             try {
                 btSocket.getOutputStream().flush();
-                btSocket.getOutputStream().write((command + ";").getBytes());
+                btSocket.getOutputStream().write((command + '\n').getBytes());
             } catch (IOException e) {
                 Toast.makeText(applicationContext, "Socket write IOException", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    protected String read() {
+    private String read() {
         if (isReady()) {
             try {
                 BufferedReader reader = new BufferedReader(
@@ -117,5 +117,10 @@ public class BluetoothContext extends AsyncTask<Void, Void, Void> { // UI thread
         String response = read();
         if (!response.equals("OK"))
             Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show();
+    }
+
+    protected String sendQuery(String query) {
+        write(query);
+        return read();
     }
 }

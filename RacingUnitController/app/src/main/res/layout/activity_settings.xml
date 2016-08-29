@@ -83,6 +83,44 @@
                 android:progress="0"
                 android:indeterminate="false" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Test spark cut-off"
+                android:id="@+id/textView1"
+                android:layout_below="@id/rpmProgressBar"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Kill time: 100 ms"
+                android:id="@+id/killTimeTextView"
+                android:layout_below="@+id/textView1"
+                android:layout_centerHorizontal="true" />
+
+            <SeekBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/killTimeSeekBar"
+                android:layout_below="@+id/killTimeTextView"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:indeterminate="false"
+                android:progress="20"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kill spark"
+                android:id="@+id/killTimeButton"
+                android:layout_below="@+id/killTimeSeekBar"
+                android:layout_centerHorizontal="true" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -90,7 +128,7 @@
                 android:id="@+id/view1"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/rpmProgressBar" />
+                android:layout_below="@+id/killTimeButton" />
 
             <TextView
                 android:layout_width="wrap_content"

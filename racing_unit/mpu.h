@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "setup_defaults/settings.h"
 
-//#define USE_SERIAL
+#define USE_SERIAL
 #define USE_INTERRUPT
 #define INTERRUPT_PIN 7
 

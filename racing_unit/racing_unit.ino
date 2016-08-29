@@ -1,7 +1,7 @@
 #include "mpu.h"
 #include "bluetooth.h"
 
-//#define USE_SERIAL
+#define USE_SERIAL
 //#define DISPLAY_RPM
 
 #define CYLINDER_NUMBER 4
@@ -17,8 +17,6 @@ const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 9, 8, 6, 5 };
 unsigned long rpm_measurement_start_time = 0;
 volatile uint16_t coil_spark_counter = 0;
 uint16_t last_rpm = 0;
-volatile bool spark_killed = false;
-unsigned long spark_restore_time = 0;
 
 bool launch_control_enabling_started = false;
 unsigned long launch_control_enabling_start_time = 0;
@@ -56,7 +54,7 @@ void setup()
 void loop()
 {
     restore_spark();
-    //mpu_loop();
+    mpu_loop();
     measure_rpm();
     quickshifter();
     launch_control();
@@ -167,21 +165,15 @@ uint8_t get_kill_time(uint16_t rpm)
     }
 }
 
-void kill_spark(uint16_t duration)
-{
-    spark_killed = true;
-    spark_restore_time = millis() + duration;
-}
-
 void restore_spark()
 {
-    if (spark_killed && millis() >= spark_restore_time)
-        spark_killed = false;
+    if (globals.spark_killed && millis() >= globals.spark_restore_time)
+        globals.spark_killed = false;
 }
 
 void spark_int(uint8_t spark_num)
 {
-    digitalWrite(COIL_PIN_SWITCH[spark_num], spark_killed ? HIGH : LOW);
+    digitalWrite(COIL_PIN_SWITCH[spark_num], globals.spark_killed ? HIGH : LOW);
     coil_spark_counter++;
 }
 

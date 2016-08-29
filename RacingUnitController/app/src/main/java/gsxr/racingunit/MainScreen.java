@@ -75,11 +75,9 @@ public class MainScreen extends AppCompatActivity {
             @Override
             public void run() {
                 if (btContext.isReady()) {
-                    btContext.write("GLC");
-                    lcEnabledSwitch.setChecked(btContext.read().equals("ON"));
+                    lcEnabledSwitch.setChecked(btContext.sendQuery("GLC").equals("ON"));
 
-                    btContext.write("GYPR");
-                    String[] ypr = btContext.read().split(",");
+                    String[] ypr = btContext.sendQuery("GYPR").split(",");
                     wcAngleTextView.setText(String.format(Locale.getDefault(), "%s°", ypr[2]));
                     tiltAngleTextView.setText(String.format(Locale.getDefault(), "%s°", ypr[1]));
                 }
@@ -88,5 +86,11 @@ public class MainScreen extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onDestroy() {
+        btContext.close();
+        super.onDestroy();
     }
 }

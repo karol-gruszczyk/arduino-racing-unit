@@ -18,15 +18,15 @@ import java.util.Locale;
 public class Settings extends AppCompatActivity {
     BluetoothContext btContext;
     Switch wcEnabledSwitch, qsEnabledSwitch;
-    TextView gyroTextView, wcAngleTextView, wcKillTimeTextView, lcRpmTextView, lcKillTimeTextView,
-            lcWorkingTimeTextView, rpmTextView, qsMinRpmTextView, qsMaxRpmTextView,
-            qsSensorTextView, qsSensitivityTextView;
-    SeekBar wcAngleSeekBar, wcKillTimeSeekBar, lcRpmSeekBar, lcKillTimeSeekBar,
+    TextView gyroTextView, killTimeTextView, wcAngleTextView, wcKillTimeTextView, lcRpmTextView,
+            lcKillTimeTextView, lcWorkingTimeTextView, rpmTextView, qsMinRpmTextView,
+            qsMaxRpmTextView, qsSensorTextView, qsSensitivityTextView;
+    SeekBar killTimeSeekBar, wcAngleSeekBar, wcKillTimeSeekBar, lcRpmSeekBar, lcKillTimeSeekBar,
             lcWorkingTimeSeekBar, qsMinRpmSeekBar, qsMaxRpmSeekBar, qsSensitivitySeekBar;
     ProgressBar qsSensorProgressBar, rpmProgressBar;
-    Button gyroButton, qsKillTimesButton, saveButton, backButton;
+    Button gyroButton, killTimeButton, qsKillTimesButton, saveButton, backButton;
 
-    private int maxRpm = 100;
+    private int maxRpm = 0;
     private int qsSensorMax = 0;
 
     @Override
@@ -42,6 +42,34 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String command = "CAL_GYRO";
+                btContext.sendCommand(command);
+            }
+        });
+
+        killTimeTextView = (TextView)findViewById(R.id.killTimeTextView);
+        killTimeSeekBar = (SeekBar) findViewById(R.id.killTimeSeekBar);
+        killTimeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress *= 5;
+                killTimeTextView.setText(String.format(Locale.getDefault(),
+                        "Kill time: %d ms", progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+        killTimeButton = (Button)findViewById(R.id.killTimeButton);
+        killTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int kill_time = killTimeSeekBar.getProgress() * 5;
+                String command = "SKS:" + kill_time;
                 btContext.sendCommand(command);
             }
         });
@@ -290,13 +318,11 @@ public class Settings extends AppCompatActivity {
         updateHandler.post(new Runnable() {
             @Override
             public void run() {
-                btContext.write("GYPR");
-                String[] ypr = btContext.read().split(",");
+                String[] ypr = btContext.sendQuery("GYPR").split(",");
                 gyroTextView.setText(String.format(Locale.getDefault(),
                         "X: %s°   Y: %s°   Z: %s°", ypr[0], ypr[1], ypr[2]));
 
-                btContext.write("GQS_CSENS");
-                int sensor = Integer.parseInt(btContext.read());
+                int sensor = Integer.parseInt(btContext.sendQuery("GQS_CSENS"));
                 if (sensor > 0) {
                     if (sensor > qsSensorMax) {
                         qsSensorMax = sensor;
@@ -307,8 +333,7 @@ public class Settings extends AppCompatActivity {
                 qsSensorTextView.setText(String.format(Locale.getDefault(),
                         "Sensor reading: %d / %d", sensor, qsSensorMax));
 
-                btContext.write("GRPM");
-                int rpm = Integer.parseInt(btContext.read());
+                int rpm = Integer.parseInt(btContext.sendQuery("GRPM"));
                 rpmTextView.setText(String.format(Locale.getDefault(),
                         "Current RPM: %d / %d", rpm, maxRpm));
                 if (rpm > maxRpm) {
@@ -326,36 +351,19 @@ public class Settings extends AppCompatActivity {
 
     private void initValues() {
         // wheelie control
-        btContext.write("GWC");
-        wcEnabledSwitch.setChecked(btContext.read().equals("ON"));
-
-        btContext.write("GWC_ANGLE");
-        wcAngleSeekBar.setProgress(Integer.parseInt(btContext.read()) - 10);
-
-        btContext.write("GWC_KT");
-        wcKillTimeSeekBar.setProgress((Integer.parseInt(btContext.read()) - 50) / 10);
+        wcEnabledSwitch.setChecked(btContext.sendQuery("GWC").equals("ON"));
+        wcAngleSeekBar.setProgress(Integer.parseInt(btContext.sendQuery("GWC_ANGLE")) - 10);
+        wcKillTimeSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GWC_KT")) - 50) / 10);
 
         // launch control
-        btContext.write("GLC_RPM");
-        lcRpmSeekBar.setProgress((Integer.parseInt(btContext.read()) - 2000) / 250);
-
-        btContext.write("GLC_KT");
-        lcKillTimeSeekBar.setProgress((Integer.parseInt(btContext.read()) - 50) / 10);
-
-        btContext.write("GLC_WT");
-        lcWorkingTimeSeekBar.setProgress((Integer.parseInt(btContext.read()) - 1000) / 100);
+        lcRpmSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GLC_RPM")) - 2000) / 250);
+        lcKillTimeSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GLC_KT")) - 50) / 10);
+        lcWorkingTimeSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GLC_WT")) - 1000) / 100);
 
         // quickshifter
-        btContext.write("GQS");
-        qsEnabledSwitch.setChecked(btContext.read().equals("ON"));
-
-        btContext.write("GQS_MIN");
-        qsMinRpmSeekBar.setProgress((Integer.parseInt(btContext.read()) - 2000) / 250);
-
-        btContext.write("GQS_MAX");
-        qsMaxRpmSeekBar.setProgress((Integer.parseInt(btContext.read()) - 6000) / 250);
-
-        btContext.write("GQS_SENS");
-        qsSensitivitySeekBar.setProgress(Integer.parseInt(btContext.read()));
+        qsEnabledSwitch.setChecked(btContext.sendQuery("GQS").equals("ON"));
+        qsMinRpmSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GQS_MIN")) - 2000) / 250);
+        qsMaxRpmSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GQS_MAX")) - 6000) / 250);
+        qsSensitivitySeekBar.setProgress(Integer.parseInt(btContext.sendQuery("GQS_SENS")));
     }
 }

@@ -76,8 +76,7 @@ public class QuickShifterKillTimes extends AppCompatActivity {
         });
 
         int i = 0;
-        btContext.write("GQS_KT");
-        String[] killTimes = btContext.read().split(",");
+        String[] killTimes = btContext.sendQuery("GQS_KT").split(",");
         for (SeekBar seekBar : seekBarArrayList) {
             seekBar.setMax(20);
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
