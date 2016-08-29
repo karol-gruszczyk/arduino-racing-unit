@@ -26,10 +26,7 @@ public class MainScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        View v = getLayoutInflater().inflate(R.layout.activity_main_screen, null);
-        v.setKeepScreenOn(true);
-        setContentView(v);
+        setContentView(R.layout.activity_main_screen);
 
         btContext = new BluetoothContext(getApplicationContext(), this);
         btContext.execute();
