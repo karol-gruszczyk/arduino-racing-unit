@@ -6,9 +6,15 @@
 
 #define CYLINDER_NUMBER 4
 #define RPM_REFRESH_RATE 200
+
 #define LAUNCH_CONTROL_ENABLE_INPUT_PIN 4
 #define LAUNCH_CONTROL_ENABLING_TIME 3000
+
 #define WHEELIE_CONTROL_AXIS 2
+
+#define QUICKSHIFTER_SENSOR_ANALOG_PIN A0
+#define QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE 1000
+#define QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE 350
 
 const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };  // PB6, PB2, PB3, PB1
 const uint8_t COIL_PIN_PCINT_INPUT[CYLINDER_NUMBER] = { PCINT6, PCINT2, PCINT3, PCINT1 };
@@ -101,10 +107,24 @@ void measure_rpm()
     }
 }
 
+void quickshifter_sensor()
+{
+    float vin = 5.f;
+    float raw = (float)analogRead(QUICKSHIFTER_SENSOR_ANALOG_PIN);
+    float vout = (raw * vin) / 1024.f;
+    float sensor_resistance = QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE * ((vin / vout) - 1.f);
+    globals.quickshifter_sensor = sensor_resistance - QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE;
+}
+
 void quickshifter()
 {
+    quickshifter_sensor();
+
     if (!settings.quickshifter_enabled)
         return;
+
+    if (globals.quickshifter_sensor > settings.quickshifter_sensitivity)
+        kill_spark(get_kill_time(globals.current_rpm));
 }
 
 void launch_control()

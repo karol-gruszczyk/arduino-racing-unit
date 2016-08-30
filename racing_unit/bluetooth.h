@@ -101,7 +101,7 @@ void bt_get(String get_what)
     else if (get_what == "QS_SENS")
         Serial1.println(settings.quickshifter_sensitivity);
     else if (get_what == "QS_CSENS")
-        Serial1.println(40);  // TODO
+        Serial1.println(globals.quickshifter_sensor);
     else if (get_what == "QS_KT")
     {
         for (uint8_t i = 0; i < QUICKSHIFTER_KILL_TIME_SIZE; i++)
