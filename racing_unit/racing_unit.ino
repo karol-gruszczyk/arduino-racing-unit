@@ -112,7 +112,7 @@ void quickshifter_sensor()
     float vin = 5.f;
     float raw = (float)analogRead(QUICKSHIFTER_SENSOR_ANALOG_PIN);
     float vout = (raw * vin) / 1024.f;
-    float sensor_resistance = QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE * ((vin / vout) - 1.f);
+    float sensor_resistance = (float)QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE * (vin / vout - 1.f);
     globals.quickshifter_sensor = sensor_resistance - QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE;
 }
 
