@@ -53,7 +53,7 @@ public class MainScreen extends AppCompatActivity {
                 background.setBackgroundColor(lightsEnabled ? Color.WHITE : Color.BLACK);
                 for (int i = 0; i < background.getChildCount(); i++) {
                     View v = background.getChildAt(i);
-                    if (v instanceof TextView) {
+                    if (!(v instanceof Button) || v instanceof Switch) {
                         TextView child = (TextView)v.findViewById(v.getId());
                         child.setTextColor(lightsEnabled ? Color.BLACK : Color.LTGRAY);
                     }
@@ -78,8 +78,10 @@ public class MainScreen extends AppCompatActivity {
                     lcEnabledSwitch.setChecked(btContext.sendQuery("GLC").equals("ON"));
 
                     String[] ypr = btContext.sendQuery("GYPR").split(",");
-                    wcAngleTextView.setText(String.format(Locale.getDefault(), "%s°", ypr[2]));
-                    tiltAngleTextView.setText(String.format(Locale.getDefault(), "%s°", ypr[1]));
+                    if (ypr.length > 0) {
+                        wcAngleTextView.setText(String.format(Locale.getDefault(), "%s°", ypr[2]));
+                        tiltAngleTextView.setText(String.format(Locale.getDefault(), "%s°", ypr[1]));
+                    }
                 }
 
                 updateHandler.postDelayed(this, 250);

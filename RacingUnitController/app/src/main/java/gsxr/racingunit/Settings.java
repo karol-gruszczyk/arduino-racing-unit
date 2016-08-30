@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -35,6 +36,11 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         btContext = MainScreen.btContext;
+        if (!btContext.isReady()) {
+            Toast.makeText(getApplicationContext(), "Connection lost", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         gyroTextView = (TextView)findViewById(R.id.gyroTextView);
         gyroButton = (Button)findViewById(R.id.gyroButton);

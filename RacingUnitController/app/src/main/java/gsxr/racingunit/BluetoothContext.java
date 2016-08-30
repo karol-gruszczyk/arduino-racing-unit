@@ -11,8 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketException;
 import java.util.UUID;
 
 
@@ -88,39 +90,42 @@ public class BluetoothContext extends AsyncTask<Void, Void, Void> { // UI thread
         }
     }
 
-    private void write(String command) {
+    private void write(String command) throws IOException {
         if (isReady()) {
-            try {
-                btSocket.getOutputStream().flush();
-                btSocket.getOutputStream().write((command + '\n').getBytes());
-            } catch (IOException e) {
-                Toast.makeText(applicationContext, "Socket write IOException", Toast.LENGTH_LONG).show();
-            }
-        }
+            btSocket.getOutputStream().write((command + '\n').getBytes());
+        } else
+            throw new SocketException();
     }
 
-    private String read() {
+    private String read() throws IOException {
         if (isReady()) {
-            try {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(btSocket.getInputStream()));
-                return reader.readLine();
-            } catch(IOException e) {
-                Toast.makeText(applicationContext, "Socket read IOException", Toast.LENGTH_LONG).show();
-            }
-        }
-        return "Socket is null";
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(btSocket.getInputStream()));
+            return reader.readLine();
+        } else
+           throw new SocketException();
     }
 
     protected void sendCommand(String command) {
-        write(command);
-        String response = read();
+        String response;
+        try {
+            write(command);
+            response = read();
+        } catch (IOException e) {
+            Toast.makeText(applicationContext, "Socket IOException", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!response.equals("OK"))
             Toast.makeText(applicationContext, response, Toast.LENGTH_LONG).show();
     }
 
     protected String sendQuery(String query) {
-        write(query);
-        return read();
+        try {
+            write(query);
+            return read();
+        } catch (IOException e) {
+            Toast.makeText(applicationContext, "Socket IOException", Toast.LENGTH_SHORT).show();
+            return "";
+        }
     }
 }
