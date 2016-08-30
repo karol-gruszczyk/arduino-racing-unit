@@ -104,10 +104,10 @@ void bt_get(String get_what)
         Serial1.println(globals.quickshifter_sensor);
     else if (get_what == "QS_KT")
     {
-        for (uint8_t i = 0; i < QUICKSHIFTER_KILL_TIME_SIZE; i++)
+        for (uint8_t i = 0; i < QUICKSHIFTER_KILL_TIME_ARRAY_SIZE; i++)
         {
             Serial1.print(settings.quickshifter_kill_time_at_rpm[i][1]);
-            if (i == QUICKSHIFTER_KILL_TIME_SIZE - 1)
+            if (i == QUICKSHIFTER_KILL_TIME_ARRAY_SIZE - 1)
                 Serial1.println();
             else
                 Serial1.print(COMMAND_ARGS_DELIMITER);
@@ -188,7 +188,7 @@ void bt_set(String set_what, String args)
     {
         String kill_time_str = "";
         uint8_t kill_time_counter = 0;
-        for (uint8_t i = 0; i < args.length(), kill_time_counter < QUICKSHIFTER_KILL_TIME_SIZE; i++)
+        for (uint8_t i = 0; i < args.length(), kill_time_counter < QUICKSHIFTER_KILL_TIME_ARRAY_SIZE; i++)
         {
             if (args[i] != COMMAND_ARGS_DELIMITER)
             {

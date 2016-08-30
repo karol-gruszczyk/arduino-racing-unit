@@ -4,7 +4,6 @@
 #include "setup_defaults/settings.h"
 
 #define USE_SERIAL
-#define USE_INTERRUPT
 #define INTERRUPT_PIN 7
 
 MPU6050 mpu(0x68);
@@ -26,13 +25,11 @@ uint8_t avg_counter = 0;
 float ypr_sum[3];
 VectorInt16 accel_real_sum;
 
-#ifdef USE_INTERRUPT
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
 void dmpDataReady() 
 {
     mpuInterrupt = true;
 }
-#endif
 
 
 void mpu_setup()
@@ -63,12 +60,10 @@ void mpu_setup()
         #endif
         mpu.setDMPEnabled(true);
 
-        #ifdef USE_INTERRUPT
         #ifdef USE_SERIAL
         Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
         #endif
         attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
-        #endif
         
         mpuIntStatus = mpu.getIntStatus();
 
@@ -98,11 +93,9 @@ void mpu_loop()
     // if programming failed, don't try to do anything
     if (!dmpReady) return;
 
-    #ifdef USE_INTERRUPT
     if (!mpuInterrupt && fifoCount < packetSize)
         return;
     mpuInterrupt = false;
-    #endif
 
     mpuIntStatus = mpu.getIntStatus();
 

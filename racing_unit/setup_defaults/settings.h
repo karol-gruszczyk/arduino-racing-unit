@@ -21,7 +21,7 @@ struct settings_t
     uint16_t quickshifter_min_rpm = DEFAULT_QUICKSHIFTER_MIN_RPM;
     uint16_t quickshifter_max_rpm = DEFAULT_QUICKSHIFTER_MAX_RPM;
     uint16_t quickshifter_sensitivity = DEFAULT_QUICKSHIFTER_SENSITIVITY;
-    uint16_t quickshifter_kill_time_at_rpm[QUICKSHIFTER_KILL_TIME_SIZE][2] = DEFAULT_QUICKSHIFTER_KILL_TIME_AT_RPM;
+    uint16_t quickshifter_kill_time_at_rpm[QUICKSHIFTER_KILL_TIME_ARRAY_SIZE][2] = DEFAULT_QUICKSHIFTER_KILL_TIME_AT_RPM;
 } settings;
 
 

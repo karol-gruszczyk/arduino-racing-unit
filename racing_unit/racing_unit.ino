@@ -13,7 +13,7 @@
 #define WHEELIE_CONTROL_AXIS 2
 
 #define QUICKSHIFTER_SENSOR_ANALOG_PIN A0
-#define QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE 1000
+#define QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE 327
 #define QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE 350
 
 const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };  // PB6, PB2, PB3, PB1
@@ -37,7 +37,6 @@ void measure_rpm();
 void bluetooth_setup();
 void bluetooth();
 
-uint8_t get_kill_time(uint16_t rpm);
 void kill_spark(uint16_t duration);
 void restore_spark();
 
@@ -107,13 +106,26 @@ void measure_rpm()
     }
 }
 
+uint8_t get_kill_time(uint16_t rpm)
+{
+    for (int8_t i = QUICKSHIFTER_KILL_TIME_ARRAY_SIZE - 1; i >= 0; i--)
+    {
+        if (settings.quickshifter_kill_time_at_rpm[i][0] < rpm)
+            return settings.quickshifter_kill_time_at_rpm[i][1];
+    }
+    return 0;
+}
+
 void quickshifter_sensor()
 {
     float vin = 5.f;
-    float raw = (float)analogRead(QUICKSHIFTER_SENSOR_ANALOG_PIN);
-    float vout = (raw * vin) / 1024.f;
-    float sensor_resistance = (float)QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE * (vin / vout - 1.f);
-    globals.quickshifter_sensor = sensor_resistance - QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE;
+    int raw = analogRead(QUICKSHIFTER_SENSOR_ANALOG_PIN);
+    if (raw > 0)
+    {
+        float vout = (raw * vin) / 1024.f;
+        float sensor_resistance = (float)QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE * (vin / vout - 1.f);
+        globals.quickshifter_sensor = sensor_resistance - QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE;
+    }
 }
 
 void quickshifter()
@@ -123,8 +135,11 @@ void quickshifter()
     if (!settings.quickshifter_enabled)
         return;
 
-    if (globals.quickshifter_sensor > settings.quickshifter_sensitivity)
-        kill_spark(get_kill_time(globals.current_rpm));
+    if (globals.current_rpm >= settings.quickshifter_min_rpm && globals.current_rpm <= settings.quickshifter_max_rpm)
+    {
+        if (globals.quickshifter_sensor > settings.quickshifter_sensitivity)
+            kill_spark(get_kill_time(globals.current_rpm));
+    }
 }
 
 void launch_control()
@@ -173,16 +188,6 @@ void wheelie_control()
         return;
     if (abs(globals.ypr[WHEELIE_CONTROL_AXIS]) >= settings.wheelie_control_max_angle)
         kill_spark(settings.wheelie_control_kill_time);
-}
-
-uint8_t get_kill_time(uint16_t rpm)
-{
-    uint8_t array_len = sizeof(settings.quickshifter_kill_time_at_rpm) / sizeof(settings.quickshifter_kill_time_at_rpm[0]);
-    for (uint8_t i = array_len - 1; i >= 0; i--)
-    {
-        if (settings.quickshifter_kill_time_at_rpm[i][0] < rpm)
-            return settings.quickshifter_kill_time_at_rpm[i][1];
-    }
 }
 
 void restore_spark()
