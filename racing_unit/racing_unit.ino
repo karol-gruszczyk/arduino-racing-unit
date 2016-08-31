@@ -203,7 +203,7 @@ void spark_int(uint8_t spark_num)
     coil_spark_counter++;
 }
 
-bool pcint_states[4];
+bool pcint_states[4] = { true, true, true, true };
 
 ISR (PCINT0_vect)
 {
