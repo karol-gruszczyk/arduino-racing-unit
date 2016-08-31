@@ -12,9 +12,9 @@
 
 #define WHEELIE_CONTROL_AXIS 2
 
-#define QUICKSHIFTER_SENSOR_ANALOG_PIN A0
-#define QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE 327
-#define QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE 350
+#define QUICK_SHIFTER_SENSOR_ANALOG_PIN A0
+#define QUICK_SHIFTER_SENSOR_CHECK_RESISNTANCE 327
+#define QUICK_SHIFTER_SENSOR_INITIAL_RESISTANCE 350
 
 const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };  // PB6, PB2, PB3, PB1
 const uint8_t COIL_PIN_PCINT_INPUT[CYLINDER_NUMBER] = { PCINT6, PCINT2, PCINT3, PCINT1 };
@@ -30,7 +30,7 @@ bool launch_control_started = false;
 unsigned long launch_control_start_time = 0;
 
 void coils_setup();
-void quickshifter();
+void quick_shifter();
 void launch_control();
 void wheelie_control();
 void measure_rpm();
@@ -61,7 +61,7 @@ void loop()
     restore_spark();
     mpu_loop();
     measure_rpm();
-    quickshifter();
+    quick_shifter();
     launch_control();
     wheelie_control();
     bluetooth();
@@ -109,36 +109,36 @@ void measure_rpm()
 
 uint8_t get_kill_time(uint16_t rpm)
 {
-    for (int8_t i = QUICKSHIFTER_KILL_TIME_ARRAY_SIZE - 1; i >= 0; i--)
+    for (int8_t i = QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE - 1; i >= 0; i--)
     {
-        if (settings.quickshifter_kill_time_at_rpm[i][0] < rpm)
-            return settings.quickshifter_kill_time_at_rpm[i][1];
+        if (settings.quick_shifter_kill_time_at_rpm[i][0] < rpm)
+            return settings.quick_shifter_kill_time_at_rpm[i][1];
     }
     return 0;
 }
 
-void quickshifter_sensor()
+void quick_shifter_sensor()
 {
     float vin = 5.f;
-    int raw = analogRead(QUICKSHIFTER_SENSOR_ANALOG_PIN);
+    int raw = analogRead(QUICK_SHIFTER_SENSOR_ANALOG_PIN);
     if (raw > 0)
     {
         float vout = (raw * vin) / 1024.f;
-        float sensor_resistance = (float)QUICKSHIFTER_SENSOR_CHECK_RESISNTANCE * (vin / vout - 1.f);
-        globals.quickshifter_sensor = sensor_resistance - QUICKSHIFTER_SENSOR_INITIAL_RESISTANCE;
+        float sensor_resistance = (float)QUICK_SHIFTER_SENSOR_CHECK_RESISNTANCE * (vin / vout - 1.f);
+        globals.quick_shifter_sensor = sensor_resistance - QUICK_SHIFTER_SENSOR_INITIAL_RESISTANCE;
     }
 }
 
-void quickshifter()
+void quick_shifter()
 {
-    quickshifter_sensor();
+    quick_shifter_sensor();
 
-    if (!settings.quickshifter_enabled)
+    if (!settings.quick_shifter_enabled)
         return;
 
-    if (globals.current_rpm >= settings.quickshifter_min_rpm && globals.current_rpm <= settings.quickshifter_max_rpm)
+    if (globals.current_rpm >= settings.quick_shifter_min_rpm && globals.current_rpm <= settings.quick_shifter_max_rpm)
     {
-        if (globals.quickshifter_sensor > settings.quickshifter_sensitivity)
+        if (globals.quick_shifter_sensor > settings.quick_shifter_sensitivity)
             kill_spark(get_kill_time(globals.current_rpm));
     }
 }

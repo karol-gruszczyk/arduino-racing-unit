@@ -7,7 +7,7 @@ struct globals_t
     bool rpm_rising = true;
 
     bool launch_control_enabled = false;
-    int quickshifter_sensor = 0;
+    int quick_shifter_sensor = 0;
 
     float ypr[3] = { 0.f, 0.f, 0.f };
     VectorInt16 accel_real;

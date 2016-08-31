@@ -17,11 +17,11 @@ struct settings_t
     uint8_t wheelie_control_max_angle = DEFAULT_WHEELIE_CONTROL_MAX_ANGLE;
     uint8_t wheelie_control_kill_time = DEFAULT_WHEELIE_CONTROL_KILL_TIME;
     
-    bool quickshifter_enabled = DEFAULT_QUICKSHIFTER_ENABLED;
-    uint16_t quickshifter_min_rpm = DEFAULT_QUICKSHIFTER_MIN_RPM;
-    uint16_t quickshifter_max_rpm = DEFAULT_QUICKSHIFTER_MAX_RPM;
-    uint16_t quickshifter_sensitivity = DEFAULT_QUICKSHIFTER_SENSITIVITY;
-    uint16_t quickshifter_kill_time_at_rpm[QUICKSHIFTER_KILL_TIME_ARRAY_SIZE][2] = DEFAULT_QUICKSHIFTER_KILL_TIME_AT_RPM;
+    bool quick_shifter_enabled = DEFAULT_QUICK_SHIFTER_ENABLED;
+    uint16_t quick_shifter_min_rpm = DEFAULT_QUICK_SHIFTER_MIN_RPM;
+    uint16_t quick_shifter_max_rpm = DEFAULT_QUICK_SHIFTER_MAX_RPM;
+    uint16_t quick_shifter_sensitivity = DEFAULT_QUICK_SHIFTER_SENSITIVITY;
+    uint16_t quick_shifter_kill_time_at_rpm[QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE][2] = DEFAULT_QUICK_SHIFTER_KILL_TIME_AT_RPM;
 } settings;
 
 

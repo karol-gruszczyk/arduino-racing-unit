@@ -366,7 +366,7 @@ public class Settings extends AppCompatActivity {
         lcKillTimeSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GLC_KT")) - 50) / 10);
         lcWorkingTimeSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GLC_WT")) - 1000) / 100);
 
-        // quickshifter
+        // quick shifter
         qsEnabledSwitch.setChecked(btContext.sendQuery("GQS").equals("ON"));
         qsMinRpmSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GQS_MIN")) - 2000) / 250);
         qsMaxRpmSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GQS_MAX")) - 6000) / 250);

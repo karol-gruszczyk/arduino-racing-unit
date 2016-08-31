@@ -284,7 +284,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Quichshifter"
+                android:text="Quick Shifter"
                 android:id="@+id/textView4"
                 android:layout_below="@+id/view2"
                 android:layout_centerHorizontal="true" />

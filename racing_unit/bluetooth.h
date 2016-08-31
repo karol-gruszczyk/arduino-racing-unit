@@ -93,21 +93,21 @@ void bt_get(String get_what)
     
     // quickshifter
     else if (get_what == "QS")
-        Serial1.println(settings.quickshifter_enabled ? "ON" : "OFF");
+        Serial1.println(settings.quick_shifter_enabled ? "ON" : "OFF");
     else if (get_what == "QS_MIN")
-        Serial1.println(settings.quickshifter_min_rpm);
+        Serial1.println(settings.quick_shifter_min_rpm);
     else if (get_what == "QS_MAX")
-        Serial1.println(settings.quickshifter_max_rpm);
+        Serial1.println(settings.quick_shifter_max_rpm);
     else if (get_what == "QS_SENS")
-        Serial1.println(settings.quickshifter_sensitivity);
+        Serial1.println(settings.quick_shifter_sensitivity);
     else if (get_what == "QS_CSENS")
-        Serial1.println(globals.quickshifter_sensor);
+        Serial1.println(globals.quick_shifter_sensor);
     else if (get_what == "QS_KT")
     {
-        for (uint8_t i = 0; i < QUICKSHIFTER_KILL_TIME_ARRAY_SIZE; i++)
+        for (uint8_t i = 0; i < QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE; i++)
         {
-            Serial1.print(settings.quickshifter_kill_time_at_rpm[i][1]);
-            if (i == QUICKSHIFTER_KILL_TIME_ARRAY_SIZE - 1)
+            Serial1.print(settings.quick_shifter_kill_time_at_rpm[i][1]);
+            if (i == QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE - 1)
                 Serial1.println();
             else
                 Serial1.print(COMMAND_ARGS_DELIMITER);
@@ -151,12 +151,12 @@ void bt_set(String set_what, String args)
     {
         if (args == "ON")
         {
-            settings.quickshifter_enabled = true;
+            settings.quick_shifter_enabled = true;
             error = false;
         }
         else if (args == "OFF")
         {
-            settings.quickshifter_enabled = false;
+            settings.quick_shifter_enabled = false;
             error = false;
         }
     }
@@ -164,7 +164,7 @@ void bt_set(String set_what, String args)
     {
         if (isNumber(args))
         {
-            settings.quickshifter_min_rpm = args.toInt();
+            settings.quick_shifter_min_rpm = args.toInt();
             error = false;
         }
     }
@@ -172,7 +172,7 @@ void bt_set(String set_what, String args)
     {
         if (isNumber(args))
         {
-            settings.quickshifter_max_rpm = args.toInt();
+            settings.quick_shifter_max_rpm = args.toInt();
             error = false;
         }
     }
@@ -180,7 +180,7 @@ void bt_set(String set_what, String args)
     {
         if (isNumber(args))
         {
-            settings.quickshifter_sensitivity = args.toInt();
+            settings.quick_shifter_sensitivity = args.toInt();
             error = false;
         }
     }
@@ -188,7 +188,7 @@ void bt_set(String set_what, String args)
     {
         String kill_time_str = "";
         uint8_t kill_time_counter = 0;
-        for (uint8_t i = 0; i < args.length(), kill_time_counter < QUICKSHIFTER_KILL_TIME_ARRAY_SIZE; i++)
+        for (uint8_t i = 0; i < args.length(), kill_time_counter < QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE; i++)
         {
             if (args[i] != COMMAND_ARGS_DELIMITER)
             {
@@ -198,7 +198,7 @@ void bt_set(String set_what, String args)
             }
             if (!isNumber(kill_time_str))
                 break;
-            settings.quickshifter_kill_time_at_rpm[kill_time_counter++][1] = kill_time_str.toInt();
+            settings.quick_shifter_kill_time_at_rpm[kill_time_counter++][1] = kill_time_str.toInt();
             kill_time_str = "";
             if (i == args.length() - 1)
                 error = false;
