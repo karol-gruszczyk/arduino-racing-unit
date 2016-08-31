@@ -76,9 +76,10 @@ void coils_setup()
     }
 
     cli();  // disable interrupts
-    PCICR |= (1 << PCIE0);  // enable PCINT0(port B) interrupts
+    PCIFR |= bit(PCIE0);
+    PCICR |= bit(PCIE0);  // enable PCINT0(port B) interrupts
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
-        PCMSK0 |= (1 << COIL_PIN_PCINT_INPUT[i]);  // enable interrupts on the appropriate pins on port B
+        *digitalPinToPCMSK(COIL_PIN_INT_INPUT[i]) |= bit (digitalPinToPCMSKbit(COIL_PIN_INT_INPUT[i]));  // enable interrupts on the appropriate pins on port B
     sei();  // enable interrupts
 
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
@@ -202,27 +203,15 @@ void spark_int(uint8_t spark_num)
     coil_spark_counter++;
 }
 
-int8_t last_high_spark = -1;
+bool pcint_states[4];
 
 ISR (PCINT0_vect)
 {
-    if (last_high_spark == -1)
+    for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
     {
-        for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
-        {
-            if (digitalRead(COIL_PIN_INT_INPUT[i] == HIGH))
-            {
-                last_high_spark = i;
-                return;
-            }
-        }
-    }
-    else
-    {
-        if (digitalRead(COIL_PIN_INT_INPUT[last_high_spark]) == LOW)
-        {
-            spark_int(last_high_spark);
-            last_high_spark = -1;
-        }
+        bool state = digitalRead(COIL_PIN_INT_INPUT[i]);
+        if (state && !pcint_states[i])
+            spark_int(i);
+        pcint_states[i] = state;
     }
 }
