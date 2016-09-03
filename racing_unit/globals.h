@@ -16,11 +16,4 @@ struct globals_t
     unsigned long spark_restore_time = 0;
 } globals;
 
-
-void kill_spark(uint16_t duration)
-{
-    globals.spark_killed = true;
-    globals.spark_restore_time = millis() + duration;
-}
-
 #endif /* GLOBALS_H_ */

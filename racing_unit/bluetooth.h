@@ -1,5 +1,6 @@
 #include "setup_defaults/settings.h"
 #include "globals.h"
+#include "coils.h"
 
 //#define USE_SERIAL
 
