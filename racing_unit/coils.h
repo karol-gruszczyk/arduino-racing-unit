@@ -2,7 +2,7 @@
 #define COILS_H_
 #include "globals.h"
 
-#define RPM_REFRESH_RATE 200
+#define RPM_REFRESH_RATE 100
 
 const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };
 const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 9, 8, 6, 5 };

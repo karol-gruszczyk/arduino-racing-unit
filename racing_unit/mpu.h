@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "setup_defaults/settings.h"
 
-#define USE_SERIAL
+//#define USE_SERIAL
 #define INTERRUPT_PIN 7
 
 MPU6050 mpu(0x68);
