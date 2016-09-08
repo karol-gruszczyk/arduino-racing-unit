@@ -14787,8 +14787,8 @@ http://www.fairchildsemi.com/ds/LM/LM7805.pdf</description>
 <part name="J9" library="jumper" deviceset="J" device="5MM"/>
 <part name="J4" library="jumper" deviceset="J" device="5MM"/>
 <part name="J5" library="jumper" deviceset="J" device="7MM"/>
-<part name="J3" library="jumper" deviceset="J" device="10MM"/>
 <part name="C2" library="rcl" deviceset="CPOL-EU" device="E7.5-16" value="4700uF/25V"/>
+<part name="J3" library="jumper" deviceset="J" device="5MM"/>
 </parts>
 <sheets>
 <sheet>
@@ -14870,8 +14870,8 @@ http://www.fairchildsemi.com/ds/LM/LM7805.pdf</description>
 <instance part="J9" gate="1" x="139.7" y="60.96"/>
 <instance part="J4" gate="1" x="129.54" y="-55.88"/>
 <instance part="J5" gate="1" x="121.92" y="-25.4" rot="R90"/>
-<instance part="J3" gate="1" x="73.66" y="-68.58"/>
 <instance part="C2" gate="G$1" x="162.56" y="-2.54"/>
+<instance part="J3" gate="1" x="73.66" y="-68.58"/>
 </instances>
 <busses>
 </busses>
@@ -15006,6 +15006,10 @@ http://www.fairchildsemi.com/ds/LM/LM7805.pdf</description>
 <wire x1="137.16" y1="-45.72" x2="142.24" y2="-45.72" width="0.1524" layer="91"/>
 <wire x1="142.24" y1="-45.72" x2="142.24" y2="-53.34" width="0.1524" layer="91"/>
 <wire x1="142.24" y1="-53.34" x2="152.4" y2="-53.34" width="0.1524" layer="91"/>
+<pinref part="MPU6050" gate="A" pin="7"/>
+<wire x1="142.24" y1="-66.04" x2="152.4" y2="-66.04" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="-66.04" x2="142.24" y2="-53.34" width="0.1524" layer="91"/>
+<junction x="142.24" y="-53.34"/>
 </segment>
 <segment>
 <pinref part="HC-06" gate="A" pin="2"/>
@@ -15509,26 +15513,20 @@ http://www.fairchildsemi.com/ds/LM/LM7805.pdf</description>
 <junction x="121.92" y="-17.78"/>
 </segment>
 </net>
-<net name="N$5" class="0">
+<net name="N$34" class="0">
 <segment>
-<pinref part="MPU6050" gate="A" pin="7"/>
-<wire x1="152.4" y1="-66.04" x2="144.78" y2="-66.04" width="0.1524" layer="91"/>
 <pinref part="HC-06" gate="A" pin="1"/>
 <wire x1="167.64" y1="-25.4" x2="144.78" y2="-25.4" width="0.1524" layer="91"/>
 <wire x1="144.78" y1="-25.4" x2="144.78" y2="-50.8" width="0.1524" layer="91"/>
-<junction x="144.78" y="-50.8"/>
 <pinref part="MPU6050" gate="A" pin="1"/>
 <wire x1="152.4" y1="-50.8" x2="144.78" y2="-50.8" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="-50.8" x2="144.78" y2="-66.04" width="0.1524" layer="91"/>
-<junction x="144.78" y="-66.04"/>
-<wire x1="129.54" y1="-66.04" x2="144.78" y2="-66.04" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="-66.04" x2="129.54" y2="-33.02" width="0.1524" layer="91"/>
-<pinref part="R7" gate="G$1" pin="2"/>
+</segment>
+</net>
+<net name="N$36" class="0">
+<segment>
 <pinref part="J5" gate="1" pin="1"/>
-<wire x1="121.92" y1="-40.64" x2="121.92" y2="-33.02" width="0.1524" layer="91"/>
-<wire x1="121.92" y1="-33.02" x2="121.92" y2="-30.48" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="-33.02" x2="121.92" y2="-33.02" width="0.1524" layer="91"/>
-<junction x="121.92" y="-33.02"/>
+<pinref part="R7" gate="G$1" pin="2"/>
+<wire x1="121.92" y1="-40.64" x2="121.92" y2="-30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
