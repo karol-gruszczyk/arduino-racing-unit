@@ -20,7 +20,7 @@ boolean isNumber(String str){
 
 void bluetooth_setup()
 {
-    Serial1.begin(115200);
+    Serial.begin(115200);
 }
 
 void bt_get(String get_what);
@@ -28,13 +28,13 @@ void bt_set(String set_what, String args);
 
 void bluetooth()
 {
-    if (!Serial1 or !Serial1.available())
+    if (!Serial or !Serial.available())
         return;
 
     bool received_full_cmd = false;
-    while (Serial1.available())
+    while (Serial.available())
     {
-        char c = Serial1.read();
+        char c = Serial.read();
         if (c == COMMAND_EOF_CHAR)
         {
             received_full_cmd = true;
@@ -45,20 +45,18 @@ void bluetooth()
 
     if (!received_full_cmd)
         return;
-    else
-        received_full_cmd = true;
 
     if (command == "SAVE")
     {
         save_settings();
-        Serial1.println(F("OK"));
+        Serial.println(F("OK"));
     }
     else if (command == "CAL_GYRO")
     {
         settings.gyro_calibration[0] += globals.ypr[0];
         settings.gyro_calibration[1] += globals.ypr[1];
         settings.gyro_calibration[2] += globals.ypr[2];
-        Serial1.println(F("OK"));
+        Serial.println(F("OK"));
     }
     else if (command[0] == 'G')
     {
@@ -74,7 +72,7 @@ void bluetooth()
     }
     else
     {
-        Serial1.println(F("ERROR: Unknown command"));
+        Serial.println(F("ERROR: Unknown command"));
     }
     command = "";
 }
@@ -82,56 +80,59 @@ void bluetooth()
 void bt_get(String get_what)
 {
     if (get_what == "RPM")
-        Serial1.println(globals.current_rpm);
+        Serial.println(globals.current_rpm);
     else if (get_what == "YPR")
     {
-        Serial1.print((int)globals.ypr[0]);
-        Serial1.print(",");
-        Serial1.print((int)globals.ypr[1]);
-        Serial1.print(",");
-        Serial1.println((int)globals.ypr[2]);
+        Serial.print((int)globals.ypr[0]);
+        Serial.print(",");
+        Serial.print((int)globals.ypr[1]);
+        Serial.print(",");
+        Serial.println((int)globals.ypr[2]);
     }
-    
-    // quickshifter
-    else if (get_what == "QS")
-        Serial1.println(settings.quick_shifter_enabled ? "ON" : "OFF");
-    else if (get_what == "QS_MIN")
-        Serial1.println(settings.quick_shifter_min_rpm);
-    else if (get_what == "QS_MAX")
-        Serial1.println(settings.quick_shifter_max_rpm);
-    else if (get_what == "QS_SENS")
-        Serial1.println(settings.quick_shifter_sensitivity);
-    else if (get_what == "QS_CSENS")
-        Serial1.println(globals.quick_shifter_sensor);
-    else if (get_what == "QS_KT")
+    else if (get_what[0] == 'L')  // launch control
     {
-        for (uint8_t i = 0; i < QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE; i++)
+        if (get_what == "LC")
+            Serial.println(globals.launch_control_enabled ? "ON" : "OFF");
+        else if (get_what == "LC_RPM")
+            Serial.println(settings.launch_control_rpm);
+        else if (get_what == "LC_KT")
+            Serial.println(settings.launch_control_kill_time);
+        else if (get_what == "LC_WT")
+            Serial.println(settings.launch_control_working_time);
+    }
+    else if (get_what[0] == 'Q')  // quickshifter
+    {
+        if (get_what == "QS")
+            Serial.println(settings.quick_shifter_enabled ? "ON" : "OFF");
+        else if (get_what == "QS_MIN")
+            Serial.println(settings.quick_shifter_min_rpm);
+        else if (get_what == "QS_MAX")
+            Serial.println(settings.quick_shifter_max_rpm);
+        else if (get_what == "QS_SENS")
+            Serial.println(settings.quick_shifter_sensitivity);
+        else if (get_what == "QS_CSENS")
+            Serial.println(globals.quick_shifter_sensor);
+        else if (get_what == "QS_KT")
         {
-            Serial1.print(settings.quick_shifter_kill_time_at_rpm[i][1]);
-            if (i == QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE - 1)
-                Serial1.println();
-            else
-                Serial1.print(COMMAND_ARGS_DELIMITER);
+            for (uint8_t i = 0; i < QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE; i++)
+            {
+                Serial.print(settings.quick_shifter_kill_time_at_rpm[i][1]);
+                if (i == QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE - 1)
+                    Serial.println();
+                else
+                    Serial.print(COMMAND_ARGS_DELIMITER);
+            }
         }
     }
-    
-    // wheelie control
-    else if (get_what == "WC")
-        Serial1.println(settings.wheelie_control_enabled ? "ON" : "OFF");
-    else if (get_what == "WC_ANGLE")
-        Serial1.println(settings.wheelie_control_max_angle);
-    else if (get_what == "WC_KT")
-        Serial1.println(settings.wheelie_control_kill_time);
-    
-    // launch control
-    else if (get_what == "LC")
-        Serial1.println(globals.launch_control_enabled ? "ON" : "OFF");
-    else if (get_what == "LC_RPM")
-        Serial1.println(settings.launch_control_rpm);
-    else if (get_what == "LC_KT")
-        Serial1.println(settings.launch_control_kill_time);
-    else if (get_what == "LC_WT")
-        Serial1.println(settings.launch_control_working_time);
+    else if (get_what[0] == 'W')  // wheelie control
+    {
+        if (get_what == "WC")
+            Serial.println(settings.wheelie_control_enabled ? "ON" : "OFF");
+        else if (get_what == "WC_ANGLE")
+            Serial.println(settings.wheelie_control_max_angle);
+        else if (get_what == "WC_KT")
+            Serial.println(settings.wheelie_control_kill_time);
+    }
 }
 
 void bt_set(String set_what, String args)
@@ -277,7 +278,7 @@ void bt_set(String set_what, String args)
     }
     
     if (!error)
-        Serial1.println(F("OK"));
+        Serial.println(F("OK"));
     else
-        Serial1.println(F("ERROR"));
+        Serial.println(F("ERROR"));
 }

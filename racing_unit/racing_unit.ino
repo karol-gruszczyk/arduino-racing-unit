@@ -1,10 +1,6 @@
 #include "mpu.h"
 #include "bluetooth.h"
 
-#define USE_SERIAL
-//#define DISPLAY_RPM
-
-#define LAUNCH_CONTROL_ENABLE_INPUT_PIN 4
 #define LAUNCH_CONTROL_ENABLING_TIME 3000
 
 #define WHEELIE_CONTROL_AXIS 2
@@ -13,16 +9,12 @@
 #define QUICK_SHIFTER_SENSOR_CHECK_RESISNTANCE 327
 #define QUICK_SHIFTER_SENSOR_INITIAL_RESISTANCE 350
 
-bool launch_control_enabling_started = false;
-unsigned long launch_control_enabling_start_time = 0;
 bool launch_control_started = false;
 unsigned long launch_control_start_time = 0;
 
-void quick_shifter();
-void launch_control();
-void wheelie_control();
-void bluetooth_setup();
-void bluetooth();
+bool led = false;
+uint16_t led_counter = 0;
+#define LED_COUNTER_MAX 250
 
 
 void setup()
@@ -32,12 +24,14 @@ void setup()
     while(!Serial);
     #endif
 
-    load_settings();
-    bluetooth_setup();
-    mpu_setup();
     coils_setup();
-    pinMode(LAUNCH_CONTROL_ENABLE_INPUT_PIN, INPUT);
-    digitalWrite(LAUNCH_CONTROL_ENABLE_INPUT_PIN, LOW);
+    load_settings();
+    mpu_setup();
+    #ifndef USE_SERIAL
+    bluetooth_setup();
+    #endif
+
+    pinMode(13, OUTPUT);
 }
 
 void loop()
@@ -48,7 +42,15 @@ void loop()
     quick_shifter();
     launch_control();
     wheelie_control();
+    #ifndef USE_SERIAL
     bluetooth();
+    #endif
+    if (++led_counter >= LED_COUNTER_MAX)
+    {
+        led_counter = 0;
+        led = !led;
+        digitalWrite(13, led ? HIGH : LOW);
+    }
 }
 
 uint8_t get_kill_time(uint16_t rpm)
@@ -89,20 +91,6 @@ void quick_shifter()
 
 void launch_control()
 {
-    if (digitalRead(LAUNCH_CONTROL_ENABLE_INPUT_PIN) == HIGH)
-    {
-        if (!launch_control_enabling_started)
-        {
-            launch_control_enabling_started = true;
-            launch_control_enabling_start_time = millis();
-        }
-        if (millis() - launch_control_enabling_start_time >= LAUNCH_CONTROL_ENABLING_TIME)
-            globals.launch_control_enabled = true;
-
-    }
-    else
-        launch_control_enabling_started = false;
-
     if (globals.launch_control_enabled)
     {
         if (!launch_control_started)

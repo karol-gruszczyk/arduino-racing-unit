@@ -20495,8 +20495,8 @@ Atmel</description>
 <part name="R7" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
 <part name="R8" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
 <part name="R12" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
-<part name="R9" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
-<part name="R10" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
+<part name="R9" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
+<part name="R10" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
 <part name="R2" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
 <part name="R3" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
 <part name="R13" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
@@ -20536,6 +20536,7 @@ Atmel</description>
 <part name="C21" library="rcl" deviceset="C-EU" device="C0805" value="100n"/>
 <part name="SUPPLY22" library="supply2" deviceset="PE" device="" value="GND"/>
 <part name="IC1" library="atmel_tiny24-44-84tiny48-88mega48-88-168-328" deviceset="ATMEGA48/88/168/328" device="-AU"/>
+<part name="R18" library="rcl" deviceset="R-EU_" device="M0805" value="4k7"/>
 </parts>
 <sheets>
 <sheet>
@@ -20597,7 +20598,7 @@ Atmel</description>
 <instance part="P+11" gate="1" x="134.62" y="-40.64"/>
 <instance part="SUPPLY17" gate="PE" x="210.82" y="-45.72"/>
 <instance part="GND" gate="PE" x="124.46" y="-58.42"/>
-<instance part="P+12" gate="1" x="177.8" y="-43.18"/>
+<instance part="P+12" gate="1" x="177.8" y="-38.1"/>
 <instance part="GND1" gate="PE" x="177.8" y="-73.66"/>
 <instance part="Q5" gate="G$1" x="83.82" y="-68.58" rot="R90"/>
 <instance part="SUPPLY10" gate="PE" x="66.04" y="-83.82"/>
@@ -20616,8 +20617,8 @@ Atmel</description>
 <instance part="R7" gate="G$1" x="114.3" y="38.1" rot="R90"/>
 <instance part="R8" gate="G$1" x="142.24" y="38.1" rot="R90"/>
 <instance part="R12" gate="G$1" x="162.56" y="38.1" rot="R90"/>
-<instance part="R9" gate="G$1" x="165.1" y="-50.8"/>
-<instance part="R10" gate="G$1" x="165.1" y="-60.96"/>
+<instance part="R9" gate="G$1" x="165.1" y="-45.72"/>
+<instance part="R10" gate="G$1" x="165.1" y="-55.88"/>
 <instance part="R2" gate="G$1" x="248.92" y="-17.78" rot="R90"/>
 <instance part="R3" gate="G$1" x="269.24" y="-17.78" rot="R90"/>
 <instance part="R13" gate="G$1" x="248.92" y="-66.04" rot="R90"/>
@@ -20658,6 +20659,7 @@ Atmel</description>
 <instance part="SUPPLY22" gate="PE" x="152.4" y="15.24"/>
 <instance part="IC1" gate="IC" x="50.8" y="-17.78"/>
 <instance part="IC1" gate="PWR" x="-15.24" y="-7.62"/>
+<instance part="R18" gate="G$1" x="165.1" y="-66.04"/>
 </instances>
 <busses>
 </busses>
@@ -20848,6 +20850,12 @@ Atmel</description>
 <wire x1="294.64" y1="33.02" x2="312.42" y2="33.02" width="0.1524" layer="91"/>
 <wire x1="312.42" y1="33.02" x2="312.42" y2="38.1" width="0.1524" layer="91"/>
 <pinref part="C12" gate="G$1" pin="-"/>
+</segment>
+<segment>
+<pinref part="R18" gate="G$1" pin="2"/>
+<pinref part="GND1" gate="PE" pin="PE"/>
+<wire x1="170.18" y1="-66.04" x2="177.8" y2="-66.04" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="-66.04" x2="177.8" y2="-71.12" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -21325,12 +21333,12 @@ Atmel</description>
 <pinref part="P+11" gate="1" pin="+5V"/>
 </segment>
 <segment>
-<wire x1="170.18" y1="-50.8" x2="177.8" y2="-50.8" width="0.1524" layer="91"/>
-<wire x1="177.8" y1="-50.8" x2="177.8" y2="-60.96" width="0.1524" layer="91"/>
-<wire x1="170.18" y1="-60.96" x2="177.8" y2="-60.96" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="-45.72" x2="177.8" y2="-45.72" width="0.1524" layer="91"/>
+<wire x1="177.8" y1="-45.72" x2="177.8" y2="-55.88" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="-55.88" x2="177.8" y2="-55.88" width="0.1524" layer="91"/>
 <pinref part="P+12" gate="1" pin="+5V"/>
-<wire x1="177.8" y1="-50.8" x2="177.8" y2="-45.72" width="0.1524" layer="91"/>
-<junction x="177.8" y="-50.8"/>
+<wire x1="177.8" y1="-45.72" x2="177.8" y2="-40.64" width="0.1524" layer="91"/>
+<junction x="177.8" y="-45.72"/>
 <pinref part="R9" gate="G$1" pin="2"/>
 <pinref part="R10" gate="G$1" pin="2"/>
 </segment>
@@ -21419,10 +21427,9 @@ Atmel</description>
 <label x="137.16" y="-63.5" size="0.8128" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="GND1" gate="PE" pin="PE"/>
-<wire x1="177.8" y1="-71.12" x2="177.8" y2="-66.04" width="0.1524" layer="91"/>
-<wire x1="177.8" y1="-66.04" x2="172.72" y2="-66.04" width="0.1524" layer="91"/>
-<label x="172.72" y="-66.04" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<wire x1="160.02" y1="-66.04" x2="154.94" y2="-66.04" width="0.1524" layer="91"/>
+<label x="154.94" y="-66.04" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<pinref part="R18" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="SCL" class="0">
@@ -21432,8 +21439,8 @@ Atmel</description>
 <label x="137.16" y="-53.34" size="0.8128" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<wire x1="160.02" y1="-50.8" x2="154.94" y2="-50.8" width="0.1524" layer="91"/>
-<label x="154.94" y="-50.8" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<wire x1="160.02" y1="-45.72" x2="154.94" y2="-45.72" width="0.1524" layer="91"/>
+<label x="154.94" y="-45.72" size="0.8128" layer="95" rot="R180" xref="yes"/>
 <pinref part="R9" gate="G$1" pin="1"/>
 </segment>
 <segment>
@@ -21449,8 +21456,8 @@ Atmel</description>
 <label x="137.16" y="-55.88" size="0.8128" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<wire x1="160.02" y1="-60.96" x2="154.94" y2="-60.96" width="0.1524" layer="91"/>
-<label x="154.94" y="-60.96" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<wire x1="160.02" y1="-55.88" x2="154.94" y2="-55.88" width="0.1524" layer="91"/>
+<label x="154.94" y="-55.88" size="0.8128" layer="95" rot="R180" xref="yes"/>
 <pinref part="R10" gate="G$1" pin="1"/>
 </segment>
 <segment>

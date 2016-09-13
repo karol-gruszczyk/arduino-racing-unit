@@ -4,7 +4,7 @@
 #include "setup_defaults/settings.h"
 
 //#define USE_SERIAL
-#define INTERRUPT_PIN 7
+#define INTERRUPT_PIN 2
 
 MPU6050 mpu(0x68);
 
@@ -31,7 +31,6 @@ void dmpDataReady()
     mpuInterrupt = true;
 }
 
-
 void mpu_setup()
 {
     Wire.begin();
@@ -46,11 +45,11 @@ void mpu_setup()
     uint8_t devStatus = mpu.dmpInitialize();
 
     mpu.setXGyroOffset(-150);
-    mpu.setYGyroOffset(38);
-    mpu.setZGyroOffset(15);
-    mpu.setXAccelOffset(-2660);
-    mpu.setYAccelOffset(-665);
-    mpu.setZAccelOffset(1559);
+    mpu.setYGyroOffset(30);
+    mpu.setZGyroOffset(22);
+    mpu.setXAccelOffset(-2679);
+    mpu.setYAccelOffset(-597);
+    mpu.setZAccelOffset(1494);
 
     // make sure it worked (returns 0 if so)
     if (devStatus == 0) {
@@ -116,7 +115,9 @@ void mpu_loop()
     else if (mpuIntStatus & 0x02) 
     {
         // wait for correct available data length, should be a VERY short wait
-        while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
+        fifoCount = mpu.getFIFOCount();
+        if (fifoCount < packetSize)
+            return;
 
         // read a packet from FIFO
         mpu.getFIFOBytes(fifoBuffer, packetSize);
@@ -131,7 +132,6 @@ void mpu_loop()
         ypr_sum[0] += ypr[0];
         ypr_sum[1] += ypr[1];
         ypr_sum[2] += ypr[2];
-
 
         // display real acceleration, adjusted to remove gravity
         mpu.dmpGetQuaternion(&q, fifoBuffer);
@@ -179,4 +179,5 @@ void mpu_loop()
             #endif
         }
     }
+    mpu.resetFIFO();
 }

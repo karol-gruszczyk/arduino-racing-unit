@@ -2,11 +2,10 @@
 #define COILS_H_
 #include "globals.h"
 
-//#define USE_SERIAL
-#define RPM_REFRESH_RATE 150  // at 1k rpm a spark fires every 120ms
+#define RPM_REFRESH_RATE 180  // at 1k rpm a spark fires every 120ms
 
-const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 10, 16, 14, 15 };
-const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 9, 8, 6, 5 };
+const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 4, 5, 6, 7 };  // all on port D (PD4, PD5, PD6, PD7)
+const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 8, 9, 10, 11 };
 
 uint8_t coil_state[CYLINDER_NUMBER];
 bool coil_killed[CYLINDER_NUMBER];
@@ -19,20 +18,20 @@ void coils_setup()
 {
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
     {
+        pinMode(COIL_PIN_SWITCH[i], OUTPUT);
+        digitalWrite(COIL_PIN_SWITCH[i], LOW);
+
         coil_killed[i] = false;
         
         pinMode(COIL_PIN_INT_INPUT[i], INPUT);
         digitalWrite(COIL_PIN_INT_INPUT[i], HIGH);
-
-        pinMode(COIL_PIN_SWITCH[i], OUTPUT);
-        digitalWrite(COIL_PIN_SWITCH[i], LOW);
     }
 
     cli();  // disable interrupts
-    PCIFR |= bit(PCIE0);
-    PCICR |= bit(PCIE0);  // enable PCINT0(port B) interrupts
+    PCIFR |= bit(PCIE2);
+    PCICR |= bit(PCIE2);  // enable PCINT2(port D) interrupts
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
-        PCMSK0 |= bit (digitalPinToPCMSKbit(COIL_PIN_INT_INPUT[i]));  // enable interrupts on the appropriate pins on port B
+        PCMSK2 |= bit(digitalPinToPCMSKbit(COIL_PIN_INT_INPUT[i]));  // enable interrupts on the appropriate pins on port D
     sei();  // enable interrupts
 }
 
@@ -43,13 +42,6 @@ void measure_rpm()
         last_rpm = globals.current_rpm;
         float measure_time_in_minutes = float(millis() - rpm_measurement_start_time) / 60000.f;
         globals.current_rpm = coil_spark_counter / CYLINDER_NUMBER / measure_time_in_minutes;
-
-        #ifdef USE_SERIAL
-        Serial.print(F("RPM: "));
-        Serial.print(globals.current_rpm);
-        Serial.print(F(", sparks: "));
-        Serial.println(coil_spark_counter);
-        #endif
         
         rpm_measurement_start_time = millis();
         coil_spark_counter = 0;
@@ -87,7 +79,7 @@ void restore_spark()
     }
 }
 
-ISR (PCINT0_vect)
+ISR (PCINT2_vect)
 {
     coil_spark_counter++;
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
