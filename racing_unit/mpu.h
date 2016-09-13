@@ -3,27 +3,22 @@
 #include "globals.h"
 #include "setup_defaults/settings.h"
 
+// MPU6050_6Axis_MotionApps20.h
+// 0x02,   0x16,   0x02,   0x00, 0x09                // D_0_22 inv_set_fifo_rate
+// also set the DMP FIFO rate to 20Hz
+
 //#define USE_SERIAL
 #define INTERRUPT_PIN 2
 
 MPU6050 mpu(0x68);
 
 bool dmpReady;
-uint16_t fifoCount;
 uint16_t packetSize;
-uint8_t mpuIntStatus;
 uint8_t fifoBuffer[64];
 
 Quaternion q;           // [w, x, y, z]         quaternion container
 VectorInt16 accel;      // [x, y, z]            accel sensor measurements
-VectorInt16 accel_real; // [x, y, z]            gravity-free accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            gravity vector
-float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-
-#define RESULT_AVERAGE_NUMBER 5
-uint8_t avg_counter = 0;
-float ypr_sum[3];
-VectorInt16 accel_real_sum;
 
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
 void dmpDataReady() 
@@ -38,7 +33,6 @@ void mpu_setup()
     mpu.initialize();
 
     #ifdef USE_SERIAL
-    Serial.println(F("Testing device connections..."));
     Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
     #endif
 
@@ -54,22 +48,11 @@ void mpu_setup()
     // make sure it worked (returns 0 if so)
     if (devStatus == 0) {
         // turn on the DMP, now that it's ready
-        #ifdef USE_SERIAL
-        Serial.println(F("Enabling DMP..."));
-        #endif
         mpu.setDMPEnabled(true);
 
-        #ifdef USE_SERIAL
-        Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
-        #endif
         attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
         
-        mpuIntStatus = mpu.getIntStatus();
-
         // set our DMP Ready flag so the main loop() function knows it's okay to use it
-        #ifdef USE_SERIAL
-        Serial.println(F("DMP ready! Waiting for first interrupt..."));
-        #endif
         dmpReady = true;
 
         // get expected DMP packet size for later comparison
@@ -92,14 +75,14 @@ void mpu_loop()
     // if programming failed, don't try to do anything
     if (!dmpReady) return;
 
-    if (!mpuInterrupt && fifoCount < packetSize)
+    if (!mpuInterrupt)
         return;
     mpuInterrupt = false;
 
-    mpuIntStatus = mpu.getIntStatus();
+    uint8_t mpuIntStatus = mpu.getIntStatus();
 
     // get current FIFO count
-    fifoCount = mpu.getFIFOCount();
+    uint16_t fifoCount = mpu.getFIFOCount();
 
     // check for overflow (this should never happen unless our code is too inefficient)
     if ((mpuIntStatus & 0x10) || fifoCount == 1024) 
@@ -119,65 +102,43 @@ void mpu_loop()
         if (fifoCount < packetSize)
             return;
 
-        // read a packet from FIFO
-        mpu.getFIFOBytes(fifoBuffer, packetSize);
-        
-        // track FIFO count here in case there is > 1 packet available
-        // (this lets us immediately read more without waiting for an interrupt)
-        fifoCount -= packetSize;
+        while (fifoCount >= packetSize){
+            // read a packet from FIFO
+            mpu.getFIFOBytes(fifoBuffer, packetSize);
+            
+            // track FIFO count here in case there is > 1 packet available
+            // (this lets us immediately read more without waiting for an interrupt)
+            fifoCount -= packetSize;
+        }
+
         // display Euler angles in degrees
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
-        mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-        ypr_sum[0] += ypr[0];
-        ypr_sum[1] += ypr[1];
-        ypr_sum[2] += ypr[2];
+        mpu.dmpGetYawPitchRoll(globals.ypr, &q, &gravity);
+        globals.ypr[0] = globals.ypr[0] * 180.f / M_PI - settings.gyro_calibration[0];
+        globals.ypr[1] = globals.ypr[1] * 180.f / M_PI - settings.gyro_calibration[1];
+        globals.ypr[2] = globals.ypr[2] * 180.f / M_PI - settings.gyro_calibration[2];
 
         // display real acceleration, adjusted to remove gravity
         mpu.dmpGetQuaternion(&q, fifoBuffer);
         mpu.dmpGetAccel(&accel, fifoBuffer);
         mpu.dmpGetGravity(&gravity, &q);
-        mpu.dmpGetLinearAccel(&accel_real, &accel, &gravity);
-        accel_real_sum.x += accel_real.x;
-        accel_real_sum.y += accel_real.y;
-        accel_real_sum.z += accel_real.z;
+        mpu.dmpGetLinearAccel(&globals.accel_real, &accel, &gravity);
 
-        if (++avg_counter >= RESULT_AVERAGE_NUMBER)
-        {
-            avg_counter = 0;
+        #ifdef USE_SERIAL
+        Serial.print("ypr\t");
+        Serial.print(globals.ypr[0]);
+        Serial.print("\t");
+        Serial.print(globals.ypr[1]);
+        Serial.print("\t");
+        Serial.println(globals.ypr[2]);
 
-            globals.ypr[0] = ypr_sum[0] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI - settings.gyro_calibration[0];
-            globals.ypr[1] = ypr_sum[1] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI - settings.gyro_calibration[1];
-            globals.ypr[2] = ypr_sum[2] / float(RESULT_AVERAGE_NUMBER) * 180.f / M_PI - settings.gyro_calibration[2];
-
-            ypr_sum[0] = 0;
-            ypr_sum[1] = 0;
-            ypr_sum[2] = 0;
-
-            globals.accel_real.x = accel_real_sum.x / float(RESULT_AVERAGE_NUMBER);
-            globals.accel_real.y = accel_real_sum.y / float(RESULT_AVERAGE_NUMBER);
-            globals.accel_real.z = accel_real_sum.z / float(RESULT_AVERAGE_NUMBER);
-
-            accel_real_sum.x = 0;
-            accel_real_sum.y = 0;
-            accel_real_sum.z = 0;
-
-            #ifdef USE_SERIAL
-            Serial.print("ypr\t");
-            Serial.print(globals.ypr[0]);
-            Serial.print("\t");
-            Serial.print(globals.ypr[1]);
-            Serial.print("\t");
-            Serial.println(globals.ypr[2]);
-
-            Serial.print("areal\t");
-            Serial.print(globals.accel_real.x);
-            Serial.print("\t");
-            Serial.print(globals.accel_real.y);
-            Serial.print("\t");
-            Serial.println(globals.accel_real.z);
-            #endif
-        }
+        Serial.print("areal\t");
+        Serial.print(globals.accel_real.x);
+        Serial.print("\t");
+        Serial.print(globals.accel_real.y);
+        Serial.print("\t");
+        Serial.println(globals.accel_real.z);
+        #endif
     }
-    mpu.resetFIFO();
 }

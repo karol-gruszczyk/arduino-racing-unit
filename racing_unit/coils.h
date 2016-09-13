@@ -4,7 +4,9 @@
 
 #define RPM_REFRESH_RATE 180  // at 1k rpm a spark fires every 120ms
 
-const uint8_t COIL_PIN_INT_INPUT[CYLINDER_NUMBER] = { 4, 5, 6, 7 };  // all on port D (PD4, PD5, PD6, PD7)
+#define PCIE_PORT PCIE2
+#define PCMSK_PORT PCMSK2
+const uint8_t COIL_PIN_INPUT[CYLINDER_NUMBER] = { 4, 5, 6, 7 };  // PD4, PD5, PD6, PD7, all must be at the same port, also set PCIE_PORT and PCMSK_PORT that corresponds to that port
 const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 8, 9, 10, 11 };
 
 uint8_t coil_state[CYLINDER_NUMBER];
@@ -20,18 +22,18 @@ void coils_setup()
     {
         pinMode(COIL_PIN_SWITCH[i], OUTPUT);
         digitalWrite(COIL_PIN_SWITCH[i], LOW);
-
+        
         coil_killed[i] = false;
         
-        pinMode(COIL_PIN_INT_INPUT[i], INPUT);
-        digitalWrite(COIL_PIN_INT_INPUT[i], HIGH);
+        pinMode(COIL_PIN_INPUT[i], INPUT);
+        digitalWrite(COIL_PIN_INPUT[i], HIGH);
     }
 
     cli();  // disable interrupts
-    PCIFR |= bit(PCIE2);
-    PCICR |= bit(PCIE2);  // enable PCINT2(port D) interrupts
+    PCIFR |= bit(PCIE_PORT);
+    PCICR |= bit(PCIE_PORT);  // enable PCINT2(port D) interrupts
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
-        PCMSK2 |= bit(digitalPinToPCMSKbit(COIL_PIN_INT_INPUT[i]));  // enable interrupts on the appropriate pins on port D
+        PCMSK_PORT |= bit(digitalPinToPCMSKbit(COIL_PIN_INPUT[i]));  // enable interrupts on the appropriate pins
     sei();  // enable interrupts
 }
 
@@ -84,7 +86,7 @@ ISR (PCINT2_vect)
     coil_spark_counter++;
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
     {
-        coil_state[i] = digitalRead(COIL_PIN_INT_INPUT[i]);
+        coil_state[i] = digitalRead(COIL_PIN_INPUT[i]);
         if (globals.spark_killed && !coil_killed[i])
         {
             digitalWrite(COIL_PIN_SWITCH[i], HIGH);
