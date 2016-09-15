@@ -21,7 +21,7 @@ void coils_setup()
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
     {
         pinMode(COIL_PIN_SWITCH[i], OUTPUT);
-        digitalWrite(COIL_PIN_SWITCH[i], LOW);
+        digitalWrite(COIL_PIN_SWITCH[i], HIGH);
         
         coil_killed[i] = false;
         
@@ -58,7 +58,7 @@ void kill_spark(uint16_t duration)
     {
         if (coil_state[i] == LOW)
         {
-            digitalWrite(COIL_PIN_SWITCH[i], HIGH);
+            digitalWrite(COIL_PIN_SWITCH[i], LOW);
             coil_killed[i] = true;
         }
     }
@@ -74,7 +74,7 @@ void restore_spark()
         {
             if (coil_state[i] == LOW)
             {
-                digitalWrite(COIL_PIN_SWITCH[i], LOW);
+                digitalWrite(COIL_PIN_SWITCH[i], HIGH);
                 coil_killed[i] = false;
             }
         }

@@ -17,10 +17,11 @@ uint16_t packetSize;
 uint8_t fifoBuffer[64];
 
 Quaternion q;           // [w, x, y, z]         quaternion container
-VectorInt16 accel;      // [x, y, z]            accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            gravity vector
 
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
+
+
 void dmpDataReady() 
 {
     mpuInterrupt = true;
@@ -119,12 +120,6 @@ void mpu_loop()
         globals.ypr[1] = globals.ypr[1] * 180.f / M_PI - settings.gyro_calibration[1];
         globals.ypr[2] = globals.ypr[2] * 180.f / M_PI - settings.gyro_calibration[2];
 
-        // display real acceleration, adjusted to remove gravity
-        mpu.dmpGetQuaternion(&q, fifoBuffer);
-        mpu.dmpGetAccel(&accel, fifoBuffer);
-        mpu.dmpGetGravity(&gravity, &q);
-        mpu.dmpGetLinearAccel(&globals.accel_real, &accel, &gravity);
-
         #ifdef USE_SERIAL
         Serial.print("ypr\t");
         Serial.print(globals.ypr[0]);
@@ -132,13 +127,6 @@ void mpu_loop()
         Serial.print(globals.ypr[1]);
         Serial.print("\t");
         Serial.println(globals.ypr[2]);
-
-        Serial.print("areal\t");
-        Serial.print(globals.accel_real.x);
-        Serial.print("\t");
-        Serial.print(globals.accel_real.y);
-        Serial.print("\t");
-        Serial.println(globals.accel_real.z);
         #endif
     }
 }

@@ -1,3 +1,4 @@
+#include <avr/wdt.h>
 #include "mpu.h"
 #include "bluetooth.h"
 
@@ -12,13 +13,15 @@
 bool launch_control_started = false;
 unsigned long launch_control_start_time = 0;
 
-bool led = false;
+#define LED_PIN 13
 uint16_t led_counter = 0;
 #define LED_COUNTER_MAX 250
 
 
 void setup()
 {
+    wdt_enable(WDTO_500MS);
+    
     #ifdef USE_SERIAL
     Serial.begin(115200);
     while(!Serial);
@@ -31,11 +34,16 @@ void setup()
     bluetooth_setup();
     #endif
 
-    pinMode(13, OUTPUT);
+    pinMode(LED_PIN, OUTPUT);
+    
+    wdt_disable();
+    wdt_enable(WDTO_30MS);
 }
 
 void loop()
 {
+    wdt_reset();
+    
     restore_spark();
     mpu_loop();
     measure_rpm();
@@ -45,11 +53,11 @@ void loop()
     #ifndef USE_SERIAL
     bluetooth();
     #endif
+    
     if (++led_counter >= LED_COUNTER_MAX)
     {
         led_counter = 0;
-        led = !led;
-        digitalWrite(13, led ? HIGH : LOW);
+        digitalWrite(LED_PIN, !digitalRead(LED_PIN));
     }
 }
 
@@ -77,10 +85,10 @@ void quick_shifter_sensor()
 
 void quick_shifter()
 {
-    quick_shifter_sensor();
-
     if (!settings.quick_shifter_enabled)
         return;
+
+    quick_shifter_sensor();
 
     if (globals.current_rpm >= settings.quick_shifter_min_rpm && globals.current_rpm <= settings.quick_shifter_max_rpm)
     {
@@ -91,27 +99,24 @@ void quick_shifter()
 
 void launch_control()
 {
-    if (globals.launch_control_enabled)
+    if (!globals.launch_control_enabled)
+        return;
+
+    if (globals.current_rpm >= settings.launch_control_rpm)
     {
+        kill_spark(settings.launch_control_kill_time);
+
         if (!launch_control_started)
         {
-            if (abs(globals.accel_real.y) >= LAUNCH_CONTROL_ACTIVATION_ACCELERATION)
-            {
-                launch_control_started = true;
-                launch_control_start_time = millis();
-            }
+            launch_control_started = true;
+            launch_control_start_time = millis();
         }
-        else
-        {
-            if (millis() - launch_control_start_time >= settings.launch_control_working_time)
-            {
-                launch_control_started = false;
-                globals.launch_control_enabled = false;
-            }
-        }
+    }
 
-        if (globals.current_rpm >= settings.launch_control_rpm)
-            kill_spark(settings.launch_control_kill_time);
+    if (launch_control_started && millis() - launch_control_start_time >= settings.launch_control_working_time)
+    {
+        launch_control_started = false;
+        globals.launch_control_enabled = false;
     }
 }
 
@@ -119,6 +124,7 @@ void wheelie_control()
 {
     if (!settings.wheelie_control_enabled)
         return;
+
     if (abs(globals.ypr[WHEELIE_CONTROL_AXIS]) >= settings.wheelie_control_max_angle)
         kill_spark(settings.wheelie_control_kill_time);
 }

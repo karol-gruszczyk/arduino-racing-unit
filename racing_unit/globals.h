@@ -1,6 +1,7 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
+
 struct globals_t
 {
     uint16_t current_rpm = 0;
@@ -10,7 +11,6 @@ struct globals_t
     int quick_shifter_sensor = 0;
 
     float ypr[3] = { 0.f, 0.f, 0.f };  // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-    VectorInt16 accel_real;  // [x, y, z]            gravity-free accel sensor measurements
 
     volatile bool spark_killed = false;
     unsigned long spark_restore_time = 0;
