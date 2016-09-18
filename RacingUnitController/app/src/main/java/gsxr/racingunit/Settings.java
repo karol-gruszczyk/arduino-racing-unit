@@ -91,11 +91,11 @@ public class Settings extends AppCompatActivity {
 
         wcAngleTextView = (TextView)findViewById(R.id.wcAngleTextView);
         wcAngleSeekBar = (SeekBar)findViewById(R.id.wcAngleSeekBar);
-        wcAngleSeekBar.setMax(60);
+        wcAngleSeekBar.setMax(55);
         wcAngleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progress += 10;
+                progress += 5;
                 wcAngleTextView.setText(String.format(Locale.getDefault(),
                         "Max angle: %d°", progress));
                 if (fromUser) {
@@ -320,6 +320,8 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        initValues();
+
         final Handler updateHandler = new Handler();
         updateHandler.post(new Runnable() {
             @Override
@@ -351,14 +353,12 @@ public class Settings extends AppCompatActivity {
                 updateHandler.postDelayed(this, 250);
             }
         });
-
-        initValues();
     }
 
     private void initValues() {
         // wheelie control
         wcEnabledSwitch.setChecked(btContext.sendQuery("GWC").equals("ON"));
-        wcAngleSeekBar.setProgress(Integer.parseInt(btContext.sendQuery("GWC_ANGLE")) - 10);
+        wcAngleSeekBar.setProgress(Integer.parseInt(btContext.sendQuery("GWC_ANGLE")) - 5);
         wcKillTimeSeekBar.setProgress((Integer.parseInt(btContext.sendQuery("GWC_KT")) - 50) / 10);
 
         // launch control

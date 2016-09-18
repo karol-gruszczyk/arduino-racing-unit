@@ -2,7 +2,7 @@
 #define COILS_H_
 #include "globals.h"
 
-#define RPM_REFRESH_RATE 180  // at 1k rpm a spark fires every 120ms
+//#define USE_DEBUG_SERIAL
 
 #define PCIE_PORT PCIE2
 #define PCMSK_PORT PCMSK2
@@ -12,7 +12,6 @@ const uint8_t COIL_PIN_SWITCH[CYLINDER_NUMBER] = { 8, 9, 10, 11 };
 uint8_t coil_state[CYLINDER_NUMBER];
 bool coil_killed[CYLINDER_NUMBER];
 unsigned long rpm_measurement_start_time = 0;
-volatile uint16_t coil_spark_counter = 0;
 uint16_t last_rpm = 0;
 
 
@@ -21,7 +20,7 @@ void coils_setup()
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
     {
         pinMode(COIL_PIN_SWITCH[i], OUTPUT);
-        digitalWrite(COIL_PIN_SWITCH[i], HIGH);
+        digitalWrite(COIL_PIN_SWITCH[i], LOW);
         
         coil_killed[i] = false;
         
@@ -35,20 +34,30 @@ void coils_setup()
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
         PCMSK_PORT |= bit(digitalPinToPCMSKbit(COIL_PIN_INPUT[i]));  // enable interrupts on the appropriate pins
     sei();  // enable interrupts
+
+    rpm_measurement_start_time = micros();
 }
 
 void measure_rpm()
 {
-    if (millis() - rpm_measurement_start_time >= RPM_REFRESH_RATE)
+    last_rpm = globals.current_rpm;
+    float crank_time = (micros() - rpm_measurement_start_time) / 2.f;  // spark every 2 cranks
+    if (crank_time < 0.f)  // micros() overflow
     {
-        last_rpm = globals.current_rpm;
-        float measure_time_in_minutes = float(millis() - rpm_measurement_start_time) / 60000.f;
-        globals.current_rpm = coil_spark_counter / CYLINDER_NUMBER / measure_time_in_minutes;
-        
-        rpm_measurement_start_time = millis();
-        coil_spark_counter = 0;
-        globals.rpm_rising = globals.current_rpm >= last_rpm;
+        rpm_measurement_start_time = micros();
+        return;
     }
+    globals.current_rpm = 60.f * 1000 * 1000 / crank_time;
+        
+    rpm_measurement_start_time = micros();
+    globals.rpm_rising = globals.current_rpm > last_rpm;
+
+    #ifdef USE_DEBUG_SERIAL
+    Serial.print(F("crank_time: "));
+    Serial.print(crank_time);
+    Serial.print(F("\tRPM: "));
+    Serial.println(globals.current_rpm);
+    #endif
 }
 
 void kill_spark(uint16_t duration)
@@ -58,7 +67,7 @@ void kill_spark(uint16_t duration)
     {
         if (coil_state[i] == LOW)
         {
-            digitalWrite(COIL_PIN_SWITCH[i], LOW);
+            digitalWrite(COIL_PIN_SWITCH[i], HIGH);
             coil_killed[i] = true;
         }
     }
@@ -74,7 +83,7 @@ void restore_spark()
         {
             if (coil_state[i] == LOW)
             {
-                digitalWrite(COIL_PIN_SWITCH[i], HIGH);
+                digitalWrite(COIL_PIN_SWITCH[i], LOW);
                 coil_killed[i] = false;
             }
         }
@@ -83,7 +92,9 @@ void restore_spark()
 
 ISR (PCINT2_vect)
 {
-    coil_spark_counter++;
+    if (coil_state[0] == LOW and digitalRead(COIL_PIN_INPUT[0]) == HIGH)
+        measure_rpm();
+
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)
     {
         coil_state[i] = digitalRead(COIL_PIN_INPUT[i]);

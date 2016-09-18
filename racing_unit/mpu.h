@@ -7,7 +7,7 @@
 // 0x02,   0x16,   0x02,   0x00, 0x09                // D_0_22 inv_set_fifo_rate
 // also set the DMP FIFO rate to 20Hz
 
-//#define USE_SERIAL
+//#define USE_DEBUG_SERIAL
 #define INTERRUPT_PIN 2
 
 MPU6050 mpu(0x68);
@@ -33,7 +33,7 @@ void mpu_setup()
     TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
     mpu.initialize();
 
-    #ifdef USE_SERIAL
+    #ifdef USE_DEBUG_SERIAL
     Serial.println(mpu.testConnection() ? F("MPU6050 connection successful") : F("MPU6050 connection failed"));
     #endif
 
@@ -63,7 +63,7 @@ void mpu_setup()
         // 1 = initial memory load failed
         // 2 = DMP configuration updates failed
         // (if it's going to break, usually the code will be 1)
-        #ifdef USE_SERIAL
+        #ifdef USE_DEBUG_SERIAL
         Serial.print(F("DMP Initialization failed (code "));
         Serial.print(devStatus);
         Serial.println(F(")"));
@@ -90,7 +90,7 @@ void mpu_loop()
     {
         // reset so we can continue cleanly
         mpu.resetFIFO();
-        #ifdef USE_SERIAL
+        #ifdef USE_DEBUG_SERIAL
         Serial.println(F("FIFO overflow!"));
         #endif
 
@@ -120,7 +120,7 @@ void mpu_loop()
         globals.ypr[1] = globals.ypr[1] * 180.f / M_PI - settings.gyro_calibration[1];
         globals.ypr[2] = globals.ypr[2] * 180.f / M_PI - settings.gyro_calibration[2];
 
-        #ifdef USE_SERIAL
+        #ifdef USE_DEBUG_SERIAL
         Serial.print("ypr\t");
         Serial.print(globals.ypr[0]);
         Serial.print("\t");

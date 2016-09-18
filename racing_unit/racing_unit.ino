@@ -15,14 +15,14 @@ unsigned long launch_control_start_time = 0;
 
 #define LED_PIN 13
 uint16_t led_counter = 0;
-#define LED_COUNTER_MAX 250
+#define LED_COUNTER_MAX 2500
 
 
 void setup()
 {
-    wdt_enable(WDTO_500MS);
+    wdt_enable(WDTO_1S);
     
-    #ifdef USE_SERIAL
+    #ifdef USE_DEBUG_SERIAL  // if enabled bluetooth cant be used
     Serial.begin(115200);
     while(!Serial);
     #endif
@@ -30,14 +30,12 @@ void setup()
     coils_setup();
     load_settings();
     mpu_setup();
-    #ifndef USE_SERIAL
     bluetooth_setup();
-    #endif
 
     pinMode(LED_PIN, OUTPUT);
     
     wdt_disable();
-    wdt_enable(WDTO_30MS);
+    wdt_enable(WDTO_250MS);
 }
 
 void loop()
@@ -46,13 +44,10 @@ void loop()
     
     restore_spark();
     mpu_loop();
-    measure_rpm();
     quick_shifter();
     launch_control();
     wheelie_control();
-    #ifndef USE_SERIAL
     bluetooth();
-    #endif
     
     if (++led_counter >= LED_COUNTER_MAX)
     {

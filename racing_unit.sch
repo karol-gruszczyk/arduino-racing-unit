@@ -15193,54 +15193,6 @@ Source: WE-TPC 744053220.pdf</description>
 <text x="-3.5" y="3.5" size="1.778" layer="25">&gt;NAME</text>
 <text x="-3.5" y="-5.3" size="1.778" layer="27">&gt;VALUE</text>
 </package>
-<package name="2200-12.7">
-<description>&lt;b&gt;newport components&lt;/b&gt; 2200 Serie RM 12.7 mm&lt;p&gt;
-Miniatur Axial Lead Inductors&lt;br&gt;
-Source: www.rsonline.de&lt;br&gt;
-Order code 240-517</description>
-<wire x1="-4.9" y1="1.9" x2="4.9" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="4.9" y1="1.9" x2="4.9" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="4.9" y1="-1.9" x2="-4.9" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="-4.9" y1="-1.9" x2="-4.9" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="-6.35" y1="0" x2="-5.08" y2="0" width="0.5" layer="51"/>
-<wire x1="6.35" y1="0" x2="5.08" y2="0" width="0.5" layer="51"/>
-<pad name="1" x="-6.35" y="0" drill="0.8" diameter="1.27"/>
-<pad name="2" x="6.35" y="0" drill="0.8" diameter="1.27"/>
-<text x="-4.445" y="2.54" size="1.27" layer="25">&gt;NAME</text>
-<text x="-3.81" y="-0.635" size="1.27" layer="27">&gt;VALUE</text>
-</package>
-<package name="2200-15.24">
-<description>&lt;b&gt;newport components&lt;/b&gt; 2200 Serie RM 15.24 mm&lt;p&gt;
-Miniatur Axial Lead Inductors&lt;br&gt;
-Source: www.rsonline.de&lt;br&gt;
-Order code 240-517</description>
-<wire x1="-4.9" y1="1.9" x2="4.9" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="4.9" y1="1.9" x2="4.9" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="4.9" y1="-1.9" x2="-4.9" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="-4.9" y1="-1.9" x2="-4.9" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="-7.62" y1="0" x2="-5.08" y2="0" width="0.5" layer="51"/>
-<wire x1="7.62" y1="0" x2="5.08" y2="0" width="0.5" layer="51"/>
-<pad name="1" x="-7.62" y="0" drill="0.8" diameter="1.27"/>
-<pad name="2" x="7.62" y="0" drill="0.8" diameter="1.27"/>
-<text x="-4.445" y="2.54" size="1.27" layer="25">&gt;NAME</text>
-<text x="-3.81" y="-0.635" size="1.27" layer="27">&gt;VALUE</text>
-</package>
-<package name="2200-11.43">
-<description>&lt;b&gt;newport components&lt;/b&gt; 2200 Serie RM 11.43 mm&lt;p&gt;
-Miniatur Axial Lead Inductors&lt;br&gt;
-Source: www.rsonline.de&lt;br&gt;
-Order code 240-517</description>
-<wire x1="-4.9" y1="1.9" x2="4.9" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="4.9" y1="1.9" x2="4.9" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="4.9" y1="-1.9" x2="-4.9" y2="-1.9" width="0.2032" layer="51"/>
-<wire x1="-4.9" y1="-1.9" x2="-4.9" y2="1.9" width="0.2032" layer="51"/>
-<wire x1="-5.715" y1="0" x2="-5.08" y2="0" width="0.5" layer="51"/>
-<wire x1="5.715" y1="0" x2="5.08" y2="0" width="0.5" layer="51"/>
-<pad name="1" x="-5.715" y="0" drill="0.8" diameter="1.27"/>
-<pad name="2" x="5.715" y="0" drill="0.8" diameter="1.27"/>
-<text x="-4.445" y="2.54" size="1.27" layer="25">&gt;NAME</text>
-<text x="-3.81" y="-0.635" size="1.27" layer="27">&gt;VALUE</text>
-</package>
 <package name="CEP125">
 <description>&lt;b&gt;POWER INDUCTORS&lt;/b&gt; (SMT Type)&lt;p&gt;
 Source: www.sumida.com/products/pdf/CEP125.pdf</description>
@@ -15853,12 +15805,19 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <pin name="2" x="5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1" rot="R180"/>
 <pin name="1" x="-5.08" y="0" visible="off" length="short" direction="pas" swaplevel="1"/>
 </symbol>
-<symbol name="L-EU">
-<text x="-1.4986" y="-3.81" size="1.778" layer="95" rot="R90">&gt;NAME</text>
-<text x="3.302" y="-3.81" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
-<rectangle x1="-1.016" y1="-3.556" x2="1.016" y2="3.556" layer="94"/>
-<pin name="2" x="0" y="-5.08" visible="off" length="short" direction="pas" swaplevel="1" rot="R90"/>
-<pin name="1" x="0" y="5.08" visible="off" length="short" direction="pas" swaplevel="1" rot="R270"/>
+<symbol name="L-US">
+<wire x1="0" y1="5.08" x2="1.27" y2="3.81" width="0.254" layer="94" curve="-90"/>
+<wire x1="0" y1="2.54" x2="1.27" y2="3.81" width="0.254" layer="94" curve="90"/>
+<wire x1="0" y1="2.54" x2="1.27" y2="1.27" width="0.254" layer="94" curve="-90"/>
+<wire x1="0" y1="0" x2="1.27" y2="1.27" width="0.254" layer="94" curve="90"/>
+<wire x1="0" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94" curve="-90"/>
+<wire x1="0" y1="-2.54" x2="1.27" y2="-1.27" width="0.254" layer="94" curve="90"/>
+<wire x1="0" y1="-2.54" x2="1.27" y2="-3.81" width="0.254" layer="94" curve="-90"/>
+<wire x1="0" y1="-5.08" x2="1.27" y2="-3.81" width="0.254" layer="94" curve="90"/>
+<text x="-1.27" y="-5.08" size="1.778" layer="95" rot="R90">&gt;NAME</text>
+<text x="3.81" y="-5.08" size="1.778" layer="96" rot="R90">&gt;VALUE</text>
+<pin name="2" x="0" y="-7.62" visible="off" length="short" direction="pas" swaplevel="1" rot="R90"/>
+<pin name="1" x="0" y="7.62" visible="off" length="short" direction="pas" swaplevel="1" rot="R270"/>
 </symbol>
 </symbols>
 <devicesets>
@@ -18946,10 +18905,10 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 </device>
 </devices>
 </deviceset>
-<deviceset name="L-EU" prefix="L" uservalue="yes">
-<description>&lt;B&gt;INDUCTOR&lt;/B&gt;, European symbol</description>
+<deviceset name="L-US" prefix="L" uservalue="yes">
+<description>&lt;B&gt;INDUCTOR&lt;/B&gt;, American symbol</description>
 <gates>
-<gate name="G$1" symbol="L-EU" x="0" y="0"/>
+<gate name="G$1" symbol="L-US" x="0" y="0"/>
 </gates>
 <devices>
 <device name="L2012C" package="L2012C">
@@ -19078,6 +19037,24 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <technology name=""/>
 </technologies>
 </device>
+<device name="0204/7" package="0204/7">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="0204V" package="0204V">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
 <device name="0207/10" package="0207/10">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
@@ -19088,6 +19065,15 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 </technologies>
 </device>
 <device name="0207/12" package="0207/12">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+<device name="0207/15" package="0207/15">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -19115,33 +19101,6 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 </technologies>
 </device>
 <device name="0207/7" package="0207/7">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="0207/15" package="0207/15">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="0204/7" package="0204/7">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="0204V" package="0204V">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -19294,33 +19253,6 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <technology name=""/>
 </technologies>
 </device>
-<device name="2200-12.7" package="2200-12.7">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="2200-15.24" package="2200-15.24">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="2200-11.43" package="2200-11.43">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
 <device name="CEP125" package="CEP125">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
@@ -19429,7 +19361,7 @@ Source: www.bourns.com .. 6000_series.pdf</description>
 <technology name=""/>
 </technologies>
 </device>
-<device name="LAL03KB" package="LAL03KH">
+<device name="LAL03KH" package="LAL03KH">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
@@ -24258,9 +24190,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <part name="+3V32" library="supply1" deviceset="+3V3" device=""/>
 <part name="P+11" library="supply1" deviceset="+5V" device=""/>
 <part name="Q5" library="m-pad-2.1" deviceset="BSS138" device=""/>
-<part name="+3V33" library="supply1" deviceset="+3V3" device=""/>
-<part name="P+17" library="supply1" deviceset="+5V" device=""/>
-<part name="Q7" library="m-pad-2.1" deviceset="BSS138" device=""/>
 <part name="R2" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
 <part name="R3" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
 <part name="R14" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
@@ -24286,8 +24215,8 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <part name="IC5" library="v-reg-2" deviceset="LM1117" device="" value="LM1117-3.3"/>
 <part name="P+3" library="supply1" deviceset="+5V" device=""/>
 <part name="+3V31" library="supply1" deviceset="+3V3" device=""/>
-<part name="C11" library="rcl" deviceset="CPOL-EU" device="A/3216-18R" value="10u"/>
-<part name="C12" library="rcl" deviceset="CPOL-EU" device="A/3216-18R" value="10u"/>
+<part name="C11" library="rcl" deviceset="CPOL-EU" device="A/3216-18R" value="10u tantalum"/>
+<part name="C12" library="rcl" deviceset="CPOL-EU" device="A/3216-18R" value="10u tantalum"/>
 <part name="C19" library="rcl" deviceset="C-EU" device="C0805" value="100n"/>
 <part name="R13" library="rcl" deviceset="R-EU_" device="M0805" value="10k"/>
 <part name="P+14" library="supply1" deviceset="+5V" device=""/>
@@ -24314,7 +24243,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="C20" library="rcl" deviceset="C-EU" device="C0805" value="100n"/>
 <part name="GND17" library="supply1" deviceset="GND" device=""/>
-<part name="L1" library="rcl" deviceset="L-EU" device="0207/10" value="10uH"/>
 <part name="Q1" library="Simplex-DiscreteSemi" deviceset="MOSFET-NCHANNEL" device="_D-PAK" value="IRFR120N"/>
 <part name="Q2" library="Simplex-DiscreteSemi" deviceset="MOSFET-NCHANNEL" device="_D-PAK" value="IRFR120N"/>
 <part name="Q3" library="Simplex-DiscreteSemi" deviceset="MOSFET-NCHANNEL" device="_D-PAK" value="IRFR120N"/>
@@ -24343,6 +24271,12 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <part name="P+7" library="supply1" deviceset="+5V" device=""/>
 <part name="R9" library="rcl" deviceset="R-EU_" device="M0805" value="1k"/>
 <part name="D4" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
+<part name="GND22" library="supply1" deviceset="GND" device=""/>
+<part name="L1" library="rcl" deviceset="L-US" device="0207/10" value="10uH"/>
+<part name="P+8" library="supply1" deviceset="+5V" device=""/>
+<part name="P+17" library="supply1" deviceset="+5V" device=""/>
+<part name="P+19" library="supply1" deviceset="+5V" device=""/>
+<part name="P+20" library="supply1" deviceset="+5V" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -24371,7 +24305,7 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <instance part="P+5" gate="1" x="38.1" y="99.06"/>
 <instance part="P+2" gate="1" x="246.38" y="88.9"/>
 <instance part="P+10" gate="1" x="7.62" y="5.08"/>
-<instance part="P+12" gate="1" x="121.92" y="-12.7"/>
+<instance part="P+12" gate="1" x="121.92" y="-7.62"/>
 <instance part="P+18" gate="1" x="66.04" y="-55.88"/>
 <instance part="JP2" gate="A" x="228.6" y="-40.64"/>
 <instance part="JP3" gate="A" x="167.64" y="-60.96"/>
@@ -24383,17 +24317,14 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <instance part="+3V32" gate="G$1" x="248.92" y="0"/>
 <instance part="P+11" gate="1" x="269.24" y="0"/>
 <instance part="Q5" gate="G$1" x="259.08" y="-25.4" rot="R270"/>
-<instance part="+3V33" gate="G$1" x="248.92" y="-48.26"/>
-<instance part="P+17" gate="1" x="269.24" y="-48.26"/>
-<instance part="Q7" gate="G$1" x="259.08" y="-73.66" rot="R270"/>
 <instance part="R2" gate="G$1" x="-35.56" y="30.48"/>
 <instance part="R3" gate="G$1" x="45.72" y="86.36" rot="R90"/>
 <instance part="R14" gate="G$1" x="187.96" y="-48.26"/>
 <instance part="R15" gate="G$1" x="187.96" y="-58.42"/>
 <instance part="R11" gate="G$1" x="248.92" y="-17.78" rot="R90"/>
 <instance part="R12" gate="G$1" x="269.24" y="-17.78" rot="R90"/>
-<instance part="R16" gate="G$1" x="248.92" y="-66.04" rot="R90"/>
-<instance part="R17" gate="G$1" x="269.24" y="-66.04" rot="R90"/>
+<instance part="R16" gate="G$1" x="256.54" y="-83.82" rot="R90"/>
+<instance part="R17" gate="G$1" x="256.54" y="-63.5" rot="R90"/>
 <instance part="C7" gate="G$1" x="160.02" y="71.12"/>
 <instance part="C8" gate="G$1" x="185.42" y="71.12"/>
 <instance part="C5" gate="G$1" x="111.76" y="71.12"/>
@@ -24440,13 +24371,12 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <instance part="GND14" gate="1" x="165.1" y="-25.4"/>
 <instance part="C20" gate="G$1" x="121.92" y="-38.1"/>
 <instance part="GND17" gate="1" x="121.92" y="-48.26"/>
-<instance part="L1" gate="G$1" x="121.92" y="-22.86"/>
 <instance part="Q1" gate="G$1" x="-7.62" y="45.72"/>
 <instance part="Q2" gate="G$1" x="40.64" y="45.72"/>
 <instance part="Q3" gate="G$1" x="88.9" y="45.72"/>
 <instance part="Q4" gate="G$1" x="137.16" y="45.72"/>
-<instance part="R19" gate="G$1" x="-17.78" y="55.88"/>
-<instance part="R20" gate="G$1" x="30.48" y="55.88"/>
+<instance part="R19" gate="G$1" x="-20.32" y="50.8"/>
+<instance part="R20" gate="G$1" x="27.94" y="50.8"/>
 <instance part="Q8" gate="G$1" x="-22.86" y="30.48"/>
 <instance part="GND9" gate="1" x="-20.32" y="17.78"/>
 <instance part="R4" gate="G$1" x="12.7" y="30.48"/>
@@ -24458,8 +24388,8 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <instance part="R8" gate="G$1" x="109.22" y="30.48"/>
 <instance part="Q11" gate="G$1" x="121.92" y="30.48"/>
 <instance part="GND12" gate="1" x="124.46" y="17.78"/>
-<instance part="R21" gate="G$1" x="78.74" y="55.88"/>
-<instance part="R22" gate="G$1" x="127" y="55.88"/>
+<instance part="R21" gate="G$1" x="76.2" y="50.8"/>
+<instance part="R22" gate="G$1" x="124.46" y="50.8"/>
 <instance part="P+4" gate="1" x="86.36" y="99.06"/>
 <instance part="R5" gate="G$1" x="93.98" y="86.36" rot="R90"/>
 <instance part="D2" gate="G$1" x="86.36" y="86.36" rot="R90"/>
@@ -24469,6 +24399,12 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <instance part="P+7" gate="1" x="185.42" y="99.06"/>
 <instance part="R9" gate="G$1" x="193.04" y="86.36" rot="R90"/>
 <instance part="D4" gate="G$1" x="185.42" y="86.36" rot="R90"/>
+<instance part="GND22" gate="1" x="256.54" y="-96.52"/>
+<instance part="L1" gate="G$1" x="121.92" y="-20.32"/>
+<instance part="P+8" gate="1" x="132.08" y="58.42"/>
+<instance part="P+17" gate="1" x="83.82" y="58.42"/>
+<instance part="P+19" gate="1" x="35.56" y="58.42"/>
+<instance part="P+20" gate="1" x="-12.7" y="58.42"/>
 </instances>
 <busses>
 </busses>
@@ -24488,9 +24424,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="C7" gate="G$1" pin="1"/>
 <pinref part="IC4" gate="G$1" pin="IN"/>
 <pinref part="Q4" gate="G$1" pin="D"/>
-<pinref part="R22" gate="G$1" pin="2"/>
-<wire x1="137.16" y1="55.88" x2="132.08" y2="55.88" width="0.1524" layer="91"/>
-<junction x="137.16" y="55.88"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -24544,9 +24477,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="C1" gate="G$1" pin="1"/>
 <pinref part="IC1" gate="G$1" pin="IN"/>
 <pinref part="Q1" gate="G$1" pin="D"/>
-<pinref part="R19" gate="G$1" pin="2"/>
-<wire x1="-12.7" y1="55.88" x2="-7.62" y2="55.88" width="0.1524" layer="91"/>
-<junction x="-7.62" y="55.88"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -24564,9 +24494,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="C3" gate="G$1" pin="1"/>
 <pinref part="IC2" gate="G$1" pin="IN"/>
 <pinref part="Q2" gate="G$1" pin="D"/>
-<pinref part="R20" gate="G$1" pin="2"/>
-<wire x1="40.64" y1="55.88" x2="35.56" y2="55.88" width="0.1524" layer="91"/>
-<junction x="40.64" y="55.88"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -24584,9 +24511,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="C5" gate="G$1" pin="1"/>
 <pinref part="IC3" gate="G$1" pin="IN"/>
 <pinref part="Q3" gate="G$1" pin="D"/>
-<pinref part="R21" gate="G$1" pin="2"/>
-<wire x1="88.9" y1="55.88" x2="83.82" y2="55.88" width="0.1524" layer="91"/>
-<junction x="88.9" y="55.88"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -24639,13 +24563,10 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="IC6" gate="IC" pin="PD1(TXD/PCINT17)"/>
 </segment>
 <segment>
-<wire x1="269.24" y1="-71.12" x2="269.24" y2="-76.2" width="0.1524" layer="91"/>
-<wire x1="269.24" y1="-76.2" x2="274.32" y2="-76.2" width="0.1524" layer="91"/>
-<label x="274.32" y="-76.2" size="0.8128" layer="95" xref="yes"/>
-<pinref part="Q7" gate="G$1" pin="D"/>
-<wire x1="264.16" y1="-76.2" x2="269.24" y2="-76.2" width="0.1524" layer="91"/>
-<junction x="269.24" y="-76.2"/>
-<pinref part="R17" gate="G$1" pin="1"/>
+<wire x1="256.54" y1="-53.34" x2="261.62" y2="-53.34" width="0.1524" layer="91"/>
+<label x="261.62" y="-53.34" size="0.8128" layer="95" xref="yes"/>
+<pinref part="R17" gate="G$1" pin="2"/>
+<wire x1="256.54" y1="-53.34" x2="256.54" y2="-58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$13" class="0">
@@ -24891,11 +24812,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="R12" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="P+17" gate="1" pin="+5V"/>
-<wire x1="269.24" y1="-60.96" x2="269.24" y2="-50.8" width="0.1524" layer="91"/>
-<pinref part="R17" gate="G$1" pin="2"/>
-</segment>
-<segment>
 <pinref part="P+3" gate="1" pin="+5V"/>
 <wire x1="276.86" y1="86.36" x2="276.86" y2="78.74" width="0.1524" layer="91"/>
 <pinref part="IC5" gate="G$1" pin="IN"/>
@@ -24911,9 +24827,9 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="P+14" gate="1" pin="+5V"/>
 </segment>
 <segment>
-<pinref part="L1" gate="G$1" pin="1"/>
 <pinref part="P+12" gate="1" pin="+5V"/>
-<wire x1="121.92" y1="-17.78" x2="121.92" y2="-15.24" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="-12.7" x2="121.92" y2="-10.16" width="0.1524" layer="91"/>
+<pinref part="L1" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="D1" gate="G$1" pin="C"/>
@@ -24935,6 +24851,30 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="P+7" gate="1" pin="+5V"/>
 <wire x1="185.42" y1="88.9" x2="185.42" y2="96.52" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="R22" gate="G$1" pin="2"/>
+<wire x1="129.54" y1="50.8" x2="132.08" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="P+8" gate="1" pin="+5V"/>
+<wire x1="132.08" y1="50.8" x2="132.08" y2="55.88" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="P+17" gate="1" pin="+5V"/>
+<wire x1="83.82" y1="55.88" x2="83.82" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="R21" gate="G$1" pin="2"/>
+<wire x1="83.82" y1="50.8" x2="81.28" y2="50.8" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="R19" gate="G$1" pin="2"/>
+<wire x1="-15.24" y1="50.8" x2="-12.7" y2="50.8" width="0.1524" layer="91"/>
+<pinref part="P+20" gate="1" pin="+5V"/>
+<wire x1="-12.7" y1="50.8" x2="-12.7" y2="55.88" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="R20" gate="G$1" pin="2"/>
+<pinref part="P+19" gate="1" pin="+5V"/>
+<wire x1="33.02" y1="50.8" x2="35.56" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="35.56" y1="50.8" x2="35.56" y2="55.88" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="RX_HC-06" class="0">
 <segment>
@@ -24943,13 +24883,13 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <label x="220.98" y="-43.18" size="0.8128" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<wire x1="248.92" y1="-71.12" x2="248.92" y2="-76.2" width="0.1524" layer="91"/>
-<wire x1="248.92" y1="-76.2" x2="243.84" y2="-76.2" width="0.1524" layer="91"/>
-<label x="243.84" y="-76.2" size="0.8128" layer="95" rot="R180" xref="yes"/>
-<pinref part="Q7" gate="G$1" pin="S"/>
-<wire x1="248.92" y1="-76.2" x2="254" y2="-76.2" width="0.1524" layer="91"/>
-<junction x="248.92" y="-76.2"/>
-<pinref part="R16" gate="G$1" pin="1"/>
+<wire x1="256.54" y1="-73.66" x2="251.46" y2="-73.66" width="0.1524" layer="91"/>
+<label x="251.46" y="-73.66" size="0.8128" layer="95" rot="R180" xref="yes"/>
+<pinref part="R17" gate="G$1" pin="1"/>
+<pinref part="R16" gate="G$1" pin="2"/>
+<wire x1="256.54" y1="-68.58" x2="256.54" y2="-73.66" width="0.1524" layer="91"/>
+<wire x1="256.54" y1="-73.66" x2="256.54" y2="-78.74" width="0.1524" layer="91"/>
+<junction x="256.54" y="-73.66"/>
 </segment>
 </net>
 <net name="TX_HC-06" class="0">
@@ -25084,16 +25024,6 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <junction x="248.92" y="-7.62"/>
 <pinref part="Q5" gate="G$1" pin="G"/>
 <pinref part="R11" gate="G$1" pin="2"/>
-</segment>
-<segment>
-<pinref part="+3V33" gate="G$1" pin="+3V3"/>
-<wire x1="248.92" y1="-60.96" x2="248.92" y2="-55.88" width="0.1524" layer="91"/>
-<wire x1="248.92" y1="-55.88" x2="248.92" y2="-50.8" width="0.1524" layer="91"/>
-<wire x1="248.92" y1="-55.88" x2="256.54" y2="-55.88" width="0.1524" layer="91"/>
-<wire x1="256.54" y1="-55.88" x2="256.54" y2="-68.58" width="0.1524" layer="91"/>
-<junction x="248.92" y="-55.88"/>
-<pinref part="Q7" gate="G$1" pin="G"/>
-<pinref part="R16" gate="G$1" pin="2"/>
 </segment>
 <segment>
 <pinref part="IC5" gate="G$1" pin="OUT"/>
@@ -25296,6 +25226,11 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="GND12" gate="1" pin="GND"/>
 <wire x1="124.46" y1="20.32" x2="124.46" y2="25.4" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="R16" gate="G$1" pin="1"/>
+<pinref part="GND22" gate="1" pin="GND"/>
+<wire x1="256.54" y1="-88.9" x2="256.54" y2="-93.98" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="N$5" class="0">
 <segment>
@@ -25311,9 +25246,9 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <wire x1="106.68" y1="-30.48" x2="121.92" y2="-30.48" width="0.1524" layer="91"/>
 <pinref part="C20" gate="G$1" pin="1"/>
 <wire x1="121.92" y1="-35.56" x2="121.92" y2="-30.48" width="0.1524" layer="91"/>
-<pinref part="L1" gate="G$1" pin="2"/>
 <wire x1="121.92" y1="-30.48" x2="121.92" y2="-27.94" width="0.1524" layer="91"/>
 <junction x="121.92" y="-30.48"/>
+<pinref part="L1" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -25330,8 +25265,8 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="Q8" gate="G$1" pin="C"/>
 <wire x1="-20.32" y1="35.56" x2="-20.32" y2="45.72" width="0.1524" layer="91"/>
 <pinref part="R19" gate="G$1" pin="1"/>
-<wire x1="-22.86" y1="55.88" x2="-27.94" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="-27.94" y1="55.88" x2="-27.94" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="-25.4" y1="50.8" x2="-27.94" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="-27.94" y1="50.8" x2="-27.94" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="45.72" x2="-20.32" y2="45.72" width="0.1524" layer="91"/>
 <junction x="-20.32" y="45.72"/>
 </segment>
@@ -25350,8 +25285,8 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="Q9" gate="G$1" pin="C"/>
 <wire x1="27.94" y1="45.72" x2="27.94" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="R20" gate="G$1" pin="1"/>
-<wire x1="25.4" y1="55.88" x2="20.32" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="20.32" y1="55.88" x2="20.32" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="22.86" y1="50.8" x2="20.32" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="20.32" y1="50.8" x2="20.32" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="45.72" x2="27.94" y2="45.72" width="0.1524" layer="91"/>
 <junction x="27.94" y="45.72"/>
 </segment>
@@ -25377,8 +25312,8 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="Q3" gate="G$1" pin="G"/>
 <pinref part="Q10" gate="G$1" pin="C"/>
 <pinref part="R21" gate="G$1" pin="1"/>
-<wire x1="73.66" y1="55.88" x2="68.58" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="68.58" y1="55.88" x2="68.58" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="71.12" y1="50.8" x2="68.58" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="50.8" x2="68.58" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="68.58" y1="45.72" x2="76.2" y2="45.72" width="0.1524" layer="91"/>
 <junction x="76.2" y="45.72"/>
 </segment>
@@ -25390,8 +25325,8 @@ Source: http://www.irf.com/product-info/datasheets/data/irfr5305pbf.pdf</descrip
 <pinref part="Q4" gate="G$1" pin="G"/>
 <pinref part="Q11" gate="G$1" pin="C"/>
 <pinref part="R22" gate="G$1" pin="1"/>
-<wire x1="121.92" y1="55.88" x2="116.84" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="55.88" x2="116.84" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="50.8" x2="116.84" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="50.8" x2="116.84" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="45.72" x2="124.46" y2="45.72" width="0.1524" layer="91"/>
 <junction x="124.46" y="45.72"/>
 </segment>

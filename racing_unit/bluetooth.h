@@ -2,8 +2,6 @@
 #include "globals.h"
 #include "coils.h"
 
-//#define USE_SERIAL
-
 #define COMMAND_EOF_CHAR '\n'
 #define COMMAND_ARGS_BEGINING_CHAR ":"
 #define COMMAND_ARGS_DELIMITER ','
