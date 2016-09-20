@@ -92,7 +92,7 @@ void restore_spark()
 
 ISR (PCINT2_vect)
 {
-    if (coil_state[0] == LOW and digitalRead(COIL_PIN_INPUT[0]) == HIGH)
+    if (coil_state[0] == HIGH and digitalRead(COIL_PIN_INPUT[0]) == LOW)
         measure_rpm();
 
     for (uint8_t i = 0; i < CYLINDER_NUMBER; i++)

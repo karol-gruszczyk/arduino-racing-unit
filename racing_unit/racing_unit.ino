@@ -27,12 +27,13 @@ void setup()
     while(!Serial);
     #endif
 
+    pinMode(LED_PIN, OUTPUT);
+    digitalWrite(LED_PIN, HIGH);
+
     coils_setup();
     load_settings();
     mpu_setup();
     bluetooth_setup();
-
-    pinMode(LED_PIN, OUTPUT);
     
     wdt_disable();
     wdt_enable(WDTO_250MS);

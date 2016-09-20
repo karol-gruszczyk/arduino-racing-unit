@@ -17,7 +17,7 @@ boolean isNumber(char* str){
         if(!isDigit(str[i])) 
             return false;
     return true;
-} 
+}
 
 void bluetooth_setup()
 {
@@ -30,9 +30,6 @@ void bt_set(char* set_what, char* args);
 
 void bluetooth()
 {
-    if (!Serial or !Serial.available())
-        return;
-
     bool received_full_cmd = false;
     while (Serial.available())
     {
@@ -199,7 +196,7 @@ void bt_set(char* set_what, char* args)
             uint8_t kill_time_str_counter = 0;
             memset(kill_time_str, '\0', 4);
             uint8_t kill_time_counter = 0;
-            for (uint8_t i = 0; i < strlen(args), kill_time_counter < QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE; i++)
+            for (uint8_t i = 0; i < strlen(args) && kill_time_counter < QUICK_SHIFTER_KILL_TIME_ARRAY_SIZE; i++)
             {
                 if (args[i] != COMMAND_ARGS_DELIMITER)
                 {
