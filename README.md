@@ -1,2 +1,2 @@
-# arduino-racing-unit
-Launch Control, Wheelie Control, Quickshifter
+# Racing Unit
+Launch Control, Wheelie Control, QuickShifter
