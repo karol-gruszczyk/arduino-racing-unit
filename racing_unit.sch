@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="8.0.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -24471,9 +24471,7 @@ Low profile connectors, straight&lt;p&gt;
 <part name="R13" library="resistor" deviceset="R-EU_" device="0204/5" value="150R"/>
 <part name="X6" library="con-ptr500" deviceset="AK500/2" device="" value="QS-SENSOR"/>
 <part name="R14" library="resistor" deviceset="R-EU_" device="0204/5" value="330R"/>
-<part name="C12" library="rcl" deviceset="CPOL-EU" device="E7.5-16" value="4700uF/25V"/>
 <part name="JP1" library="pinhead" deviceset="PINHD-1X2" device="" value="PWR-LED"/>
-<part name="C11" library="rcl" deviceset="CPOL-EU" device="E7.5-16" value="4700uF/25V"/>
 <part name="JP4" library="atmel-1" deviceset="AVR-ISP-10" device="ML"/>
 <part name="P+12" library="supply1" deviceset="+5V" device=""/>
 <part name="P+10" library="supply1" deviceset="+5V" device=""/>
@@ -24578,14 +24576,6 @@ Low profile connectors, straight&lt;p&gt;
 <part name="D2" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
 <part name="D4" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
 <part name="D3" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
-<part name="D5" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
-<part name="P+2" library="supply1" deviceset="+12V" device=""/>
-<part name="D6" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
-<part name="P+3" library="supply1" deviceset="+12V" device=""/>
-<part name="D7" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
-<part name="P+4" library="supply1" deviceset="+12V" device=""/>
-<part name="D8" library="diode" deviceset="DIODE-" device="DO214AC" value="US1M"/>
-<part name="P+1" library="supply1" deviceset="+12V" device=""/>
 <part name="C10" library="rcl" deviceset="C-EU" device="C0805" value="100n"/>
 <part name="C9" library="rcl" deviceset="C-EU" device="C0805" value="330n"/>
 <part name="IC5" library="v-reg-2" deviceset="LM1117" device="TO252" value="78M05"/>
@@ -24596,8 +24586,8 @@ Low profile connectors, straight&lt;p&gt;
 <plain>
 </plain>
 <instances>
-<instance part="X5" gate="-1" x="45.72" y="-12.7" rot="R90"/>
-<instance part="X5" gate="-2" x="50.8" y="-12.7" rot="R90"/>
+<instance part="X5" gate="-1" x="-48.26" y="-15.24" rot="R90"/>
+<instance part="X5" gate="-2" x="-43.18" y="-15.24" rot="R90"/>
 <instance part="X1" gate="-1" x="-20.32" y="96.52" rot="R270"/>
 <instance part="X1" gate="-2" x="-2.54" y="96.52" rot="R270"/>
 <instance part="X2" gate="-1" x="43.18" y="96.52" rot="R270"/>
@@ -24610,9 +24600,7 @@ Low profile connectors, straight&lt;p&gt;
 <instance part="X6" gate="-1" x="172.72" y="-48.26" rot="R180"/>
 <instance part="X6" gate="-2" x="172.72" y="-55.88" rot="R180"/>
 <instance part="R14" gate="G$1" x="162.56" y="-63.5" rot="R90"/>
-<instance part="C12" gate="G$1" x="30.48" y="2.54"/>
 <instance part="JP1" gate="G$1" x="86.36" y="7.62" rot="R90"/>
-<instance part="C11" gate="G$1" x="12.7" y="2.54"/>
 <instance part="JP4" gate="G$1" x="45.72" y="-119.38"/>
 <instance part="P+12" gate="1" x="106.68" y="5.08"/>
 <instance part="P+10" gate="1" x="45.72" y="17.78"/>
@@ -24666,7 +24654,7 @@ Low profile connectors, straight&lt;p&gt;
 <instance part="R21" gate="G$1" x="185.42" y="-116.84"/>
 <instance part="GND13" gate="1" x="5.08" y="-73.66"/>
 <instance part="GND11" gate="1" x="2.54" y="-15.24"/>
-<instance part="GND9" gate="1" x="55.88" y="2.54"/>
+<instance part="GND9" gate="1" x="-33.02" y="-7.62"/>
 <instance part="GND12" gate="1" x="149.86" y="-17.78"/>
 <instance part="GND15" gate="1" x="208.28" y="-93.98"/>
 <instance part="GND19" gate="1" x="198.12" y="-124.46"/>
@@ -24718,14 +24706,6 @@ Low profile connectors, straight&lt;p&gt;
 <instance part="D2" gate="G$1" x="48.26" y="78.74"/>
 <instance part="D4" gate="G$1" x="175.26" y="78.74"/>
 <instance part="D3" gate="G$1" x="111.76" y="78.74"/>
-<instance part="D5" gate="G$1" x="-15.24" y="58.42"/>
-<instance part="P+2" gate="1" x="-7.62" y="68.58"/>
-<instance part="D6" gate="G$1" x="48.26" y="58.42"/>
-<instance part="P+3" gate="1" x="55.88" y="68.58"/>
-<instance part="D7" gate="G$1" x="111.76" y="58.42"/>
-<instance part="P+4" gate="1" x="119.38" y="68.58"/>
-<instance part="D8" gate="G$1" x="175.26" y="58.42"/>
-<instance part="P+1" gate="1" x="182.88" y="71.12"/>
 <instance part="C10" gate="G$1" x="2.54" y="2.54"/>
 <instance part="C9" gate="G$1" x="-20.32" y="2.54"/>
 <instance part="IC5" gate="G$1" x="-10.16" y="10.16"/>
@@ -24740,13 +24720,9 @@ Low profile connectors, straight&lt;p&gt;
 <pinref part="X4" gate="-1" pin="KL"/>
 <pinref part="Q4" gate="G$1" pin="D"/>
 <pinref part="D4" gate="G$1" pin="A"/>
-<wire x1="170.18" y1="78.74" x2="170.18" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="170.18" y1="58.42" x2="170.18" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="78.74" x2="170.18" y2="50.8" width="0.1524" layer="91"/>
 <wire x1="172.72" y1="78.74" x2="170.18" y2="78.74" width="0.1524" layer="91"/>
 <junction x="170.18" y="78.74"/>
-<pinref part="D8" gate="G$1" pin="A"/>
-<wire x1="172.72" y1="58.42" x2="170.18" y2="58.42" width="0.1524" layer="91"/>
-<junction x="170.18" y="58.42"/>
 </segment>
 </net>
 <net name="N$9" class="0">
@@ -24792,42 +24768,31 @@ Low profile connectors, straight&lt;p&gt;
 <pinref part="Q1" gate="G$1" pin="D"/>
 <pinref part="D1" gate="G$1" pin="A"/>
 <wire x1="-20.32" y1="78.74" x2="-20.32" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="-20.32" y1="58.42" x2="-20.32" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="-20.32" y1="78.74" x2="-20.32" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="78.74" x2="-17.78" y2="78.74" width="0.1524" layer="91"/>
 <junction x="-20.32" y="78.74"/>
-<pinref part="D5" gate="G$1" pin="A"/>
-<wire x1="-20.32" y1="58.42" x2="-17.78" y2="58.42" width="0.1524" layer="91"/>
-<junction x="-20.32" y="58.42"/>
 </segment>
 </net>
 <net name="N$2" class="0">
 <segment>
-<wire x1="43.18" y1="50.8" x2="43.18" y2="58.42" width="0.1524" layer="91"/>
 <pinref part="X2" gate="-1" pin="KL"/>
 <pinref part="Q2" gate="G$1" pin="D"/>
 <pinref part="D2" gate="G$1" pin="A"/>
-<wire x1="43.18" y1="58.42" x2="43.18" y2="78.74" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="50.8" x2="43.18" y2="78.74" width="0.1524" layer="91"/>
 <wire x1="43.18" y1="78.74" x2="43.18" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="78.74" x2="43.18" y2="78.74" width="0.1524" layer="91"/>
 <junction x="43.18" y="78.74"/>
-<pinref part="D6" gate="G$1" pin="A"/>
-<wire x1="45.72" y1="58.42" x2="43.18" y2="58.42" width="0.1524" layer="91"/>
-<junction x="43.18" y="58.42"/>
 </segment>
 </net>
 <net name="N$3" class="0">
 <segment>
-<wire x1="106.68" y1="50.8" x2="106.68" y2="58.42" width="0.1524" layer="91"/>
 <pinref part="X3" gate="-1" pin="KL"/>
-<pinref part="Q3" gate="G$1" pin="D"/>
 <pinref part="D3" gate="G$1" pin="A"/>
-<wire x1="106.68" y1="78.74" x2="106.68" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="58.42" x2="106.68" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="78.74" x2="106.68" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="78.74" x2="106.68" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="109.22" y1="78.74" x2="106.68" y2="78.74" width="0.1524" layer="91"/>
 <junction x="106.68" y="78.74"/>
-<pinref part="D7" gate="G$1" pin="A"/>
-<wire x1="109.22" y1="58.42" x2="106.68" y2="58.42" width="0.1524" layer="91"/>
-<junction x="106.68" y="58.42"/>
+<pinref part="Q3" gate="G$1" pin="D"/>
 </segment>
 </net>
 <net name="N$14" class="0">
@@ -25060,21 +25025,14 @@ Low profile connectors, straight&lt;p&gt;
 </net>
 <net name="+5V" class="0">
 <segment>
-<wire x1="12.7" y1="10.16" x2="30.48" y2="10.16" width="0.1524" layer="91"/>
-<pinref part="X5" gate="-1" pin="KL"/>
-<wire x1="30.48" y1="10.16" x2="45.72" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="45.72" y1="10.16" x2="45.72" y2="-7.62" width="0.1524" layer="91"/>
-<junction x="30.48" y="10.16"/>
-<junction x="30.48" y="10.16"/>
-<wire x1="30.48" y1="10.16" x2="30.48" y2="5.08" width="0.1524" layer="91"/>
-<junction x="30.48" y="10.16"/>
-<pinref part="C12" gate="G$1" pin="+"/>
-<junction x="30.48" y="10.16"/>
-<wire x1="12.7" y1="5.08" x2="12.7" y2="10.16" width="0.1524" layer="91"/>
-<pinref part="C11" gate="G$1" pin="+"/>
+<wire x1="2.54" y1="10.16" x2="45.72" y2="10.16" width="0.1524" layer="91"/>
 <wire x1="45.72" y1="10.16" x2="45.72" y2="15.24" width="0.1524" layer="91"/>
-<junction x="45.72" y="10.16"/>
 <pinref part="P+10" gate="1" pin="+5V"/>
+<wire x1="-2.54" y1="10.16" x2="2.54" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="2.54" y1="5.08" x2="2.54" y2="10.16" width="0.1524" layer="91"/>
+<pinref part="C10" gate="G$1" pin="1"/>
+<pinref part="IC5" gate="G$1" pin="OUT"/>
+<junction x="2.54" y="10.16"/>
 </segment>
 <segment>
 <pinref part="R13" gate="G$1" pin="1"/>
@@ -25412,10 +25370,10 @@ Low profile connectors, straight&lt;p&gt;
 <pinref part="GND12" gate="1" pin="GND"/>
 </segment>
 <segment>
-<wire x1="55.88" y1="5.08" x2="55.88" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="-33.02" y1="-5.08" x2="-33.02" y2="0" width="0.1524" layer="91"/>
 <pinref part="X5" gate="-2" pin="KL"/>
-<wire x1="55.88" y1="10.16" x2="50.8" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="50.8" y1="10.16" x2="50.8" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="-33.02" y1="0" x2="-43.18" y2="0" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="0" x2="-43.18" y2="-10.16" width="0.1524" layer="91"/>
 <pinref part="GND9" gate="1" pin="GND"/>
 </segment>
 <segment>
@@ -25536,11 +25494,6 @@ Low profile connectors, straight&lt;p&gt;
 <wire x1="162.56" y1="-71.12" x2="162.56" y2="-68.58" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="30.48" y1="-2.54" x2="30.48" y2="-7.62" width="0.1524" layer="91"/>
-<pinref part="C12" gate="G$1" pin="-"/>
-<pinref part="C11" gate="G$1" pin="-"/>
-<wire x1="12.7" y1="-2.54" x2="12.7" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="12.7" y1="-7.62" x2="30.48" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="2.54" x2="-10.16" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="-2.54" x2="-20.32" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="2.54" y1="-7.62" x2="2.54" y2="-2.54" width="0.1524" layer="91"/>
@@ -25550,9 +25503,7 @@ Low profile connectors, straight&lt;p&gt;
 <wire x1="-20.32" y1="-7.62" x2="-10.16" y2="-7.62" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="-7.62" x2="2.54" y2="-7.62" width="0.1524" layer="91"/>
 <junction x="-10.16" y="-7.62"/>
-<wire x1="2.54" y1="-7.62" x2="12.7" y2="-7.62" width="0.1524" layer="91"/>
 <junction x="2.54" y="-7.62"/>
-<junction x="12.7" y="-7.62"/>
 <wire x1="2.54" y1="-7.62" x2="2.54" y2="-12.7" width="0.1524" layer="91"/>
 <pinref part="GND11" gate="1" pin="GND"/>
 </segment>
@@ -25713,30 +25664,6 @@ Low profile connectors, straight&lt;p&gt;
 </net>
 <net name="+12V" class="0">
 <segment>
-<pinref part="D5" gate="G$1" pin="C"/>
-<pinref part="P+2" gate="1" pin="+12V"/>
-<wire x1="-12.7" y1="58.42" x2="-7.62" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="58.42" x2="-7.62" y2="66.04" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="D6" gate="G$1" pin="C"/>
-<pinref part="P+3" gate="1" pin="+12V"/>
-<wire x1="50.8" y1="58.42" x2="55.88" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="58.42" x2="55.88" y2="66.04" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="D7" gate="G$1" pin="C"/>
-<pinref part="P+4" gate="1" pin="+12V"/>
-<wire x1="114.3" y1="58.42" x2="119.38" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="119.38" y1="58.42" x2="119.38" y2="66.04" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="D8" gate="G$1" pin="C"/>
-<pinref part="P+1" gate="1" pin="+12V"/>
-<wire x1="177.8" y1="58.42" x2="182.88" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="182.88" y1="58.42" x2="182.88" y2="68.58" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="IC5" gate="G$1" pin="IN"/>
 <wire x1="-17.78" y1="10.16" x2="-20.32" y2="10.16" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="5.08" x2="-20.32" y2="10.16" width="0.1524" layer="91"/>
@@ -25745,14 +25672,10 @@ Low profile connectors, straight&lt;p&gt;
 <junction x="-20.32" y="10.16"/>
 <pinref part="P+9" gate="1" pin="+12V"/>
 <wire x1="-25.4" y1="10.16" x2="-25.4" y2="15.24" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$25" class="0">
-<segment>
-<wire x1="-2.54" y1="10.16" x2="2.54" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="2.54" y1="5.08" x2="2.54" y2="10.16" width="0.1524" layer="91"/>
-<pinref part="C10" gate="G$1" pin="1"/>
-<pinref part="IC5" gate="G$1" pin="OUT"/>
+<pinref part="X5" gate="-1" pin="KL"/>
+<wire x1="-48.26" y1="-10.16" x2="-48.26" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="-48.26" y1="10.16" x2="-25.4" y2="10.16" width="0.1524" layer="91"/>
+<junction x="-25.4" y="10.16"/>
 </segment>
 </net>
 </nets>
